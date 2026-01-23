@@ -64,13 +64,33 @@ jobs:
       - name: Bundle FFmpeg (Linux)
         if: matrix.platform == 'linux'
         run: |
-          curl -L https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz -o ffmpeg.tar.xz
+          # Используем стабильную версию 6.1
+          curl -L https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n6.1-latest-linux64-gpl.tar.xz -o ffmpeg.tar.xz
           mkdir -p ffmpeg_temp
           tar -xf ffmpeg.tar.xz --strip-components=1 -C ffmpeg_temp
           mkdir -p build/linux/x64/release/bundle/bin
           cp ffmpeg_temp/bin/ffmpeg build/linux/x64/release/bundle/bin/
           cp ffmpeg_temp/bin/ffprobe build/linux/x64/release/bundle/bin/
           chmod +x build/linux/x64/release/bundle/bin/*
+
+      - name: Bundle FFmpeg (macOS Apple Silicon)
+        if: matrix.platform == 'macos'
+        run: |
+          mkdir -p build/macos/Build/Products/Release/creos.app/Contents/Frameworks
+          # Качаем стабильные универсальные бинарники
+          curl -L https://evermeet.cx/ffmpeg/getrelease/ffmpeg/7z -o ffmpeg.7z
+          curl -L https://evermeet.cx/ffmpeg/getrelease/ffprobe/7z -o ffprobe.7z
+          
+          # Распаковываем (7z уже есть на macos-latest)
+          7z x ffmpeg.7z -off_temp
+          7z x ffprobe.7z -off_temp
+          
+          # ОПТИМИЗАЦИЯ: Оставляем только arm64 (Apple Silicon) часть бинарника
+          # Это уменьшит размер каждого файла примерно с 80МБ до 40МБ
+          lipo -thin arm64 ff_temp/ffmpeg -output build/macos/Build/Products/Release/creos.app/Contents/Frameworks/ffmpeg
+          lipo -thin arm64 ff_temp/ffprobe -output build/macos/Build/Products/Release/creos.app/Contents/Frameworks/ffprobe
+          
+          chmod +x build/macos/Build/Products/Release/creos.app/Contents/Frameworks/*
 
       - name: Bundle FFmpeg (Windows)
         if: matrix.platform == 'windows'
@@ -81,23 +101,10 @@ jobs:
           find ffmpeg_temp -name "ffmpeg.exe" -exec mv {} build/windows/x64/runner/Release/bin/ \;
           find ffmpeg_temp -name "ffprobe.exe" -exec mv {} build/windows/x64/runner/Release/bin/ \;
 
-      - name: Bundle FFmpeg (macOS Arm64)
-        if: matrix.platform == 'macos'
-        run: |
-          mkdir -p build/macos/Build/Products/Release/creos.app/Contents/Frameworks
-          # Качаем версию специально для ARM64 (Apple Silicon)
-          curl -L https://evermeet.cx/ffmpeg/get/zip/arm64 -o ffmpeg.zip
-          curl -L https://evermeet.cx/ffmpeg/get/ffprobe/zip/arm64 -o ffprobe.zip
-          mkdir -p ff_macos
-          unzip -o ffmpeg.zip -d ff_macos/
-          unzip -o ffprobe.zip -d ff_macos/
-          find ff_macos -type f -name "ffmpeg" -exec cp {} build/macos/Build/Products/Release/creos.app/Contents/Frameworks/ \;
-          find ff_macos -type f -name "ffprobe" -exec cp {} build/macos/Build/Products/Release/creos.app/Contents/Frameworks/ \;
-          chmod +x build/macos/Build/Products/Release/creos.app/Contents/Frameworks/*
-
       - name: Prepare Windows Release (MSIX)
         if: matrix.platform == 'windows'
         run: |
+          # Все настройки берем из pubspec.yaml
           flutter pub run msix:create --display-name="Creos Video Converter"
 
       - name: Upload Artifacts
@@ -108,6 +115,7 @@ jobs:
             ${{ matrix.platform == 'windows' && 'build/windows/x64/runner/Release/*.msix' || '' }}
             ${{ matrix.platform == 'macos' && 'build/macos/Build/Products/Release/creos.app' || '' }}
             ${{ matrix.platform == 'linux' && 'build/linux/x64/release/bundle' || '' }}
+          if-no-files-found: error
 
 
 
