@@ -42,8 +42,7 @@ jobs:
         if: matrix.platform == 'linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libblkid-dev liblzma-dev libgcrypt20-dev
-
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libgcrypt20-dev libblkid-dev
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
@@ -58,13 +57,13 @@ jobs:
 
       - name: Debug Output Directory
         run: |
-          echo "Listing output directory structure:"
+          echo "Listing output directory structure for ${{ matrix.platform }}:"
           ls -R ${{ matrix.output_path }}
 
       - name: Bundle FFmpeg (Linux)
         if: matrix.platform == 'linux'
         run: |
-          # Используем стабильный бинарник от John Van Sickle (стандарт для Linux)
+          # Используем стабильный бинарник от John Van Sickle
           curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o ffmpeg.tar.xz
           mkdir -p ffmpeg_temp
           tar -xf ffmpeg.tar.xz --strip-components=1 -C ffmpeg_temp
@@ -77,7 +76,6 @@ jobs:
         if: matrix.platform == 'macos'
         run: |
           mkdir -p build/macos/Build/Products/Release/creos.app/Contents/Frameworks
-          # Качаем напрямую ARM64 версию (она весит около 40-50МБ)
           curl -L https://evermeet.cx/ffmpeg/get/zip/arm64 -o ffmpeg.zip
           curl -L https://evermeet.cx/ffmpeg/get/ffprobe/zip/arm64 -o ffprobe.zip
           
@@ -98,17 +96,24 @@ jobs:
       - name: Prepare Windows Release (MSIX)
         if: matrix.platform == 'windows'
         run: |
-          # Флаги в pubspec.yaml
           flutter pub run msix:create --display-name="Creos Video Converter"
+
+      - name: Determine Artifact Path
+        id: artifact_info
+        run: |
+          if [ "${{ matrix.platform }}" == "windows" ]; then
+            echo "path=build/windows/x64/runner/Release/*.msix" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.platform }}" == "macos" ]; then
+            echo "path=build/macos/Build/Products/Release/creos.app" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.platform }}" == "linux" ]; then
+            echo "path=build/linux/x64/release/bundle" >> $GITHUB_OUTPUT
+          fi
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform }}-release
-          path: |
-            ${{ matrix.platform == 'windows' && 'build/windows/x64/runner/Release/*.msix' || '' }}
-            ${{ matrix.platform == 'macos' && 'build/macos/Build/Products/Release/creos.app' || '' }}
-            ${{ matrix.platform == 'linux' && 'build/linux/x64/release/bundle' || '' }}
+          path: ${{ steps.artifact_info.outputs.path }}
           if-no-files-found: error
 
 
