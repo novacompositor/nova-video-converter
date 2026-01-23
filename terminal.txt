@@ -1,0 +1,85 @@
+art@art:~/MyFFMPEG$ ./run.sh
+flutter: The Dart VM service is listening on http://127.0.0.1:45831/aly5_FYNGiA=/
+flutter: Starting FFmpeg with args: [-y, -i, /home/art/Рабочий стол/Creos/1xbet_9-16.mp4, -c:v, libx264, -b:v, 3074k, -preset, medium, -pass, 1, -passlogfile, /tmp/creos_KQBQXF/ffmpeg2pass, -an, -f, null, /dev/null, -progress, pipe:1, -nostats]
+flutter: FFmpeg stderr: ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  WARNING: library configuration mismatch
+  avcodec     configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared --enable-version3 --disable-doc --disable-programs --disable-static --enable-libaribb24 --enable-libopencore_amrnb --enable-libopencore_amrwb --enable-libtesseract --enable-libvo_amrwbenc --enable-libsmbclient
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+
+flutter: FFmpeg stderr: Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/home/art/Рабочий стол/Creos/1xbet_9-16.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    creation_time   : 2026-01-22T13:25:45.000000Z
+    encoder         : Blackmagic Design DaVinci Resolve Studio
+  Duration: 00:00:38.70, start: 0.000000, bitrate: 10729 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709, progressive), 1080x1920, 10424 kb/s, SAR 1:1 DAR 9:16, 24 fps, 24 tbr, 12288 tbn (default)
+    Metadata:
+      creation_time   : 2026-01-22T13:25:45.000000Z
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : H.264
+      timecode        : 00:00:00:00
+  Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 319 kb/s (default)
+    Metadata:
+      creation_time   : 2026-01-22T13:25:45.000000Z
+      handler_name    : SoundHandler
+      vendor_id       : [0][0][0][0]
+  Stream #0:2[0x3](eng): Data: none (tmcd / 0x64636D74) (default)
+    Metadata:
+      creation_time   : 2026-01-22T13:25:45.000000Z
+      handler_name    : TimeCodeHandler
+      timecode        : 00:00:00:00
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+
+flutter: FFmpeg stderr: [libx264 @ 0x5b0f28a4dac0] using SAR=1/1
+[libx264 @ 0x5b0f28a4dac0] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2
+[libx264 @ 0x5b0f28a4dac0] profile Main, level 4.0, 4:2:0, 8-bit
+Output #0, null, to '/dev/null':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf60.16.100
+  Stream #0:0(und): Video: h264, yuv420p(tv, bt709, progressive), 1080x1920 [SAR 1:1 DAR 9:16], q=2-31, 3074 kb/s, 24 fps, 24 tbn (default)
+    Metadata:
+      creation_time   : 2026-01-22T13:25:45.000000Z
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      timecode        : 00:00:00:00
+      encoder         : Lavc60.31.102 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/3074000 buffer size: 0 vbv_delay: N/A
+
+flutter: FFmpeg stderr: [out#0/null @ 0x5b0f28992200] video:13752kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: unknown
+frame=  927 fps= 12 q=-1.0 Lsize=N/A time=00:00:38.50 bitrate=N/A speed=0.514x    
+
+flutter: FFmpeg stderr: [libx264 @ 0x5b0f28a4dac0] frame I:4     Avg QP:20.35  size:111947
+[libx264 @ 0x5b0f28a4dac0] frame P:251   Avg QP:23.20  size: 36915
+
+flutter: FFmpeg stderr: [libx264 @ 0x5b0f28a4dac0] frame B:672   Avg QP:26.24  size:  6501
+[libx264 @ 0x5b0f28a4dac0] consecutive B-frames:  1.0%  5.6%  4.5% 88.9%
+[libx264 @ 0x5b0f28a4dac0] 
+flutter: FFmpeg stderr: mb I  I16..4: 41.4%  0.0% 58.6%
+[libx264 @ 0x5b0f28a4dac0] mb P  I16..4: 17.4%  0.0%  0.0%  P16..4: 48.9%  0.0%  0.0%  0.0%  0.0%    skip:33.7%
+[libx264 @ 0x5b0f28a4dac0] 
+flutter: FFmpeg stderr: mb B  I16..4:  2.2%  0.0%  0.0%  B16..8: 17.1%  0.0%  0.0%  direct: 5.3%  skip:75.5%  L0:36.7% L1:47.1% BI:16.3%
+[libx264 @ 0x5b0f28a4dac0] final ratefactor: 24.14
+[libx264 @ 0x5b0f28a4dac0] coded y,uvDC,uvAC intra: 23.4% 45.3% 5.2% inter: 8.0% 7.5% 0.2%
+[libx264 @ 0x5b0f28a4dac0] i16 v,h,dc,p: 42% 24% 17% 17%
+[libx264 @ 0x5b0f28a4dac0] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 27% 18% 13%  5%  9% 11%  7%  6%  4%
+[libx264 @ 0x5b0f28a4dac0] i8c dc,h,v,p: 48% 22% 24%  7%
+[libx264 @ 0x5b0f28a4dac0] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 0x5b0f28a4dac0] kb/s:2916.63

@@ -1,0 +1,59 @@
+name: creos
+description: "Creos - Профессиональный конвертер видео с автоматическим расчётом битрейта"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  
+  # State Management
+  flutter_riverpod: ^2.4.9
+  riverpod_annotation: ^2.3.3
+  
+  # Работа с файлами
+  file_picker: ^6.1.1
+  path_provider: ^2.1.2
+  path: ^1.8.3
+  
+  # UI компоненты  
+  google_fonts: ^6.1.0
+  flutter_animate: ^4.3.0
+  percent_indicator: ^4.2.3
+  flutter_svg: ^2.0.9
+  url_launcher: ^6.2.4
+  msix: ^3.16.7
+  
+  # Утилиты
+  intl: ^0.19.0
+  desktop_drop: ^0.4.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.8
+  riverpod_generator: ^2.3.9
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+
+msix_config:
+  display_name: Creos Video Converter
+  publisher_display_name: Creos
+  publisher: CN=Creos
+  identity_name: creos.videoconverter
+  msix_version: 1.0.0.0
+  logo_path: assets/images/logo-creos.png
+  capabilities: internetClient
+  execution_alias: creos
+  install_location: localappdata
+
+
