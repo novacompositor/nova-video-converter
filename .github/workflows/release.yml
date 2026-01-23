@@ -29,6 +29,10 @@ jobs:
             build_cmd: flutter build linux --release
             output_path: build/linux/x64/release/bundle
 
+    defaults:
+      run:
+        shell: bash
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,29 +54,30 @@ jobs:
           curl -L https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip -o ffmpeg.zip
           7z x ffmpeg.zip -offmpeg_temp
           mkdir -p build/windows/x64/runner/Release/bin
-          move ffmpeg_temp/ffmpeg-*/bin/ffmpeg.exe build/windows/x64/runner/Release/bin/
-          move ffmpeg_temp/ffmpeg-*/bin/ffprobe.exe build/windows/x64/runner/Release/bin/
+          mv ffmpeg_temp/ffmpeg-*/bin/ffmpeg.exe build/windows/x64/runner/Release/bin/
+          mv ffmpeg_temp/ffmpeg-*/bin/ffprobe.exe build/windows/x64/runner/Release/bin/
 
       - name: Bundle FFmpeg (macOS)
         if: matrix.platform == 'macos'
         run: |
           curl -L https://evermeet.cx/ffmpeg/getrelease/zip -o ffmpeg.zip
           curl -L https://evermeet.cx/ffmpeg/getrelease/ffprobe/zip -o ffprobe.zip
-          unzip ffmpeg.zip -d ffmpeg_temp
-          unzip ffprobe.zip -d ffprobe_temp
-          mkdir -p build/macos/Build/Products/Release/creos.app/Contents/Frameworks
-          cp ffmpeg_temp/ffmpeg build/macos/Build/Products/Release/creos.app/Contents/Frameworks/
-          cp ffprobe_temp/ffprobe build/macos/Build/Products/Release/creos.app/Contents/Frameworks/
+          unzip -o ffmpeg.zip -d build/macos/Build/Products/Release/creos.app/Contents/Frameworks/
+          unzip -o ffprobe.zip -d build/macos/Build/Products/Release/creos.app/Contents/Frameworks/
           chmod +x build/macos/Build/Products/Release/creos.app/Contents/Frameworks/*
 
       - name: Prepare Windows Release (MSIX)
         if: matrix.platform == 'windows'
         run: |
+          # msix requires a certificate or --host-app-id for local/test builds
+          # using --host-app-id and other flags to make it CI friendly
           flutter pub run msix:create --display-name="Creos Video Converter"
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform }}-release
-          path: ${{ matrix.platform == 'windows' && 'build/windows/x64/runner/Release/*.msix' || matrix.output_path }}
+          path: |
+            ${{ matrix.platform == 'windows' && 'build/windows/x64/runner/Release/*.msix' || matrix.output_path }}
+
 
