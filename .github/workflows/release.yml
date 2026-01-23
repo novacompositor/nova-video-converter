@@ -23,7 +23,7 @@ jobs:
             output_path: build/windows/x64/runner/Release
           - platform: macos
             os: macos-latest
-            build_cmd: flutter build macos --release --target-platform macos-arm64
+            build_cmd: flutter build macos --release
             output_path: build/macos/Build/Products/Release
           - platform: linux
             os: ubuntu-latest
