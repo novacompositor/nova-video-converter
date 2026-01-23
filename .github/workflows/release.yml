@@ -23,7 +23,7 @@ jobs:
             output_path: build/windows/x64/runner/Release
           - platform: macos
             os: macos-latest
-            build_cmd: flutter build macos --release
+            build_cmd: flutter build macos --release --target-platform macos-arm64
             output_path: build/macos/Build/Products/Release
           - platform: linux
             os: ubuntu-latest
@@ -61,23 +61,33 @@ jobs:
           echo "Listing output directory structure:"
           ls -R ${{ matrix.output_path }}
 
+      - name: Bundle FFmpeg (Linux)
+        if: matrix.platform == 'linux'
+        run: |
+          curl -L https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz -o ffmpeg.tar.xz
+          mkdir -p ffmpeg_temp
+          tar -xf ffmpeg.tar.xz --strip-components=1 -C ffmpeg_temp
+          mkdir -p build/linux/x64/release/bundle/bin
+          cp ffmpeg_temp/bin/ffmpeg build/linux/x64/release/bundle/bin/
+          cp ffmpeg_temp/bin/ffprobe build/linux/x64/release/bundle/bin/
+          chmod +x build/linux/x64/release/bundle/bin/*
+
       - name: Bundle FFmpeg (Windows)
         if: matrix.platform == 'windows'
         run: |
           curl -L https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip -o ffmpeg.zip
           7z x ffmpeg.zip -offmpeg_temp
           mkdir -p build/windows/x64/runner/Release/bin
-          # Рекурсивный поиск и перемещение
           find ffmpeg_temp -name "ffmpeg.exe" -exec mv {} build/windows/x64/runner/Release/bin/ \;
           find ffmpeg_temp -name "ffprobe.exe" -exec mv {} build/windows/x64/runner/Release/bin/ \;
 
-      - name: Bundle FFmpeg (macOS)
+      - name: Bundle FFmpeg (macOS Arm64)
         if: matrix.platform == 'macos'
         run: |
           mkdir -p build/macos/Build/Products/Release/creos.app/Contents/Frameworks
-          curl -L https://evermeet.cx/ffmpeg/getrelease/zip -o ffmpeg.zip
-          curl -L https://evermeet.cx/ffmpeg/getrelease/ffprobe/zip -o ffprobe.zip
-          # Эти архивы могут содержать бинарники напрямую. Распаковываем во временную папку и ищем.
+          # Качаем версию специально для ARM64 (Apple Silicon)
+          curl -L https://evermeet.cx/ffmpeg/get/zip/arm64 -o ffmpeg.zip
+          curl -L https://evermeet.cx/ffmpeg/get/ffprobe/zip/arm64 -o ffprobe.zip
           mkdir -p ff_macos
           unzip -o ffmpeg.zip -d ff_macos/
           unzip -o ffprobe.zip -d ff_macos/
@@ -88,7 +98,6 @@ jobs:
       - name: Prepare Windows Release (MSIX)
         if: matrix.platform == 'windows'
         run: |
-          # Флаги теперь берутся из pubspec.yaml (install: false, install_certificate: false)
           flutter pub run msix:create --display-name="Creos Video Converter"
 
       - name: Upload Artifacts
@@ -96,7 +105,9 @@ jobs:
         with:
           name: ${{ matrix.platform }}-release
           path: |
-            ${{ matrix.platform == 'windows' && 'build/windows/x64/runner/Release/*.msix' || matrix.output_path }}
+            ${{ matrix.platform == 'windows' && 'build/windows/x64/runner/Release/*.msix' || '' }}
+            ${{ matrix.platform == 'macos' && 'build/macos/Build/Products/Release/creos.app' || '' }}
+            ${{ matrix.platform == 'linux' && 'build/linux/x64/release/bundle' || '' }}
 
 
 
