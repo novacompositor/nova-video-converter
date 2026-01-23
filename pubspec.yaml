@@ -56,5 +56,6 @@ msix_config:
   execution_alias: creos
   install_location: localappdata
   install: false
+  install_certificate: false
 
 
