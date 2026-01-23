@@ -75,14 +75,12 @@ jobs:
       - name: Bundle FFmpeg (macOS Apple Silicon)
         if: matrix.platform == 'macos'
         run: |
-          mkdir -p build/macos/Build/Products/Release/creos.app/Contents/Frameworks
-          curl -L https://evermeet.cx/ffmpeg/get/zip/arm64 -o ffmpeg.zip
-          curl -L https://evermeet.cx/ffmpeg/get/ffprobe/zip/arm64 -o ffprobe.zip
-          
-          unzip -o ffmpeg.zip -d build/macos/Build/Products/Release/creos.app/Contents/Frameworks/
-          unzip -o ffprobe.zip -d build/macos/Build/Products/Release/creos.app/Contents/Frameworks/
-          
-          chmod +x build/macos/Build/Products/Release/creos.app/Contents/Frameworks/*
+          target_dir="build/macos/Build/Products/Release/creos.app/Contents/Frameworks"
+          mkdir -p "$target_dir"
+          # Используем нативные ARM64 бинарники от Shaka Project (Google)
+          curl -L https://github.com/shaka-project/static-ffmpeg-binaries/releases/download/n7.1-2/ffmpeg-osx-arm64 -o "$target_dir/ffmpeg"
+          curl -L https://github.com/shaka-project/static-ffmpeg-binaries/releases/download/n7.1-2/ffprobe-osx-arm64 -o "$target_dir/ffprobe"
+          chmod +x "$target_dir"/*
 
       - name: Bundle FFmpeg (Windows)
         if: matrix.platform == 'windows'
