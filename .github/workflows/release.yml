@@ -67,10 +67,9 @@ jobs:
           curl -L https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip -o ffmpeg.zip
           7z x ffmpeg.zip -offmpeg_temp
           mkdir -p build/windows/x64/runner/Release/bin
-          # Находим бинарники рекурсивно, чтобы не зависеть от имени папки в архиве
+          # Рекурсивный поиск и перемещение
           find ffmpeg_temp -name "ffmpeg.exe" -exec mv {} build/windows/x64/runner/Release/bin/ \;
           find ffmpeg_temp -name "ffprobe.exe" -exec mv {} build/windows/x64/runner/Release/bin/ \;
-          ls -R build/windows/x64/runner/Release/bin
 
       - name: Bundle FFmpeg (macOS)
         if: matrix.platform == 'macos'
@@ -78,15 +77,18 @@ jobs:
           mkdir -p build/macos/Build/Products/Release/creos.app/Contents/Frameworks
           curl -L https://evermeet.cx/ffmpeg/getrelease/zip -o ffmpeg.zip
           curl -L https://evermeet.cx/ffmpeg/getrelease/ffprobe/zip -o ffprobe.zip
-          unzip -o ffmpeg.zip -d build/macos/Build/Products/Release/creos.app/Contents/Frameworks/
-          unzip -o ffprobe.zip -d build/macos/Build/Products/Release/creos.app/Contents/Frameworks/
+          # Эти архивы могут содержать бинарники напрямую. Распаковываем во временную папку и ищем.
+          mkdir -p ff_macos
+          unzip -o ffmpeg.zip -d ff_macos/
+          unzip -o ffprobe.zip -d ff_macos/
+          find ff_macos -type f -name "ffmpeg" -exec cp {} build/macos/Build/Products/Release/creos.app/Contents/Frameworks/ \;
+          find ff_macos -type f -name "ffprobe" -exec cp {} build/macos/Build/Products/Release/creos.app/Contents/Frameworks/ \;
           chmod +x build/macos/Build/Products/Release/creos.app/Contents/Frameworks/*
-          ls -R build/macos/Build/Products/Release/creos.app/Contents/Frameworks
 
       - name: Prepare Windows Release (MSIX)
         if: matrix.platform == 'windows'
         run: |
-          # Используем --install false чтобы просто создать пакет и избежать интерактивных вопросов
+          # Используем --install false явно здесь тоже
           flutter pub run msix:create --display-name="Creos Video Converter" --install false
 
       - name: Upload Artifacts

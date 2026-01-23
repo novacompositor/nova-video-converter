@@ -55,5 +55,6 @@ msix_config:
   capabilities: internetClient
   execution_alias: creos
   install_location: localappdata
+  install: false
 
 
