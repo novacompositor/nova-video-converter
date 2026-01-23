@@ -14,6 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - platform: windows
@@ -36,6 +37,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Install Linux Dependencies
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libblkid-dev liblzma-dev libgcrypt20-dev
+
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
