@@ -53,7 +53,11 @@ jobs:
         run: flutter pub get
 
       - name: Build App
-        run: ${{ matrix.build_cmd }}
+        run: |
+          if [ "${{ matrix.platform }}" == "macos" ]; then
+            flutter pub run flutter_launcher_icons
+          fi
+          ${{ matrix.build_cmd }}
 
       - name: Debug Output Directory
         run: |
@@ -85,12 +89,23 @@ jobs:
       - name: Create macOS DMG
         if: matrix.platform == 'macos'
         run: |
-          # Фиксим права доступа (иначе приложение не запустится после скачивания)
-          chmod +x build/macos/Build/Products/Release/creos.app/Contents/MacOS/creos
-          chmod +x build/macos/Build/Products/Release/creos.app/Contents/Frameworks/*
+          # 1. Фиксим права доступа и убираем карантин
+          app_path="build/macos/Build/Products/Release/creos.app"
+          chmod +x "$app_path/Contents/MacOS/creos"
+          chmod +x "$app_path/Contents/Frameworks/"*
           
-          # Создаем DMG образ для удобной установки
-          hdiutil create -volname "Creos Video Converter" -srcfolder build/macos/Build/Products/Release/creos.app -ov -format UDZO Creos-Video-Converter-macOS.dmg
+          # Очистка атрибутов (чтобы реже вылетало "damaged app")
+          xattr -cr "$app_path"
+          
+          # 2. Подготовка папки для DMG
+          mkdir -p dmg_temp
+          cp -R "$app_path" dmg_temp/
+          
+          # 3. Добавление ярлыка в Applications (для Drag-and-Drop)
+          ln -s /Applications dmg_temp/Applications
+          
+          # 4. Создаем DMG образ
+          hdiutil create -volname "Creos Video Converter" -srcfolder dmg_temp -ov -format UDZO Creos-Video-Converter-macOS.dmg
 
       - name: Bundle FFmpeg (Windows)
         if: matrix.platform == 'windows'
