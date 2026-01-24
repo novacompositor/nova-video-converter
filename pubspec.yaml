@@ -50,6 +50,9 @@ flutter_launcher_icons:
   windows:
     generate: true
     image_path: "assets/images/logo-creos-highres.png"
+  linux:
+    generate: true
+    image_path: "assets/images/logo-creos-highres.png"
 
 flutter:
   uses-material-design: true

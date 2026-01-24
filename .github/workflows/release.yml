@@ -54,7 +54,7 @@ jobs:
 
       - name: Build App
         run: |
-          if [ "${{ matrix.platform }}" == "macos" ] || [ "${{ matrix.platform }}" == "windows" ]; then
+          if [ "${{ matrix.platform }}" == "macos" ] || [ "${{ matrix.platform }}" == "windows" ] || [ "${{ matrix.platform }}" == "linux" ]; then
             flutter pub run flutter_launcher_icons
           fi
           ${{ matrix.build_cmd }}
@@ -75,6 +75,55 @@ jobs:
           cp ffmpeg_temp/ffmpeg build/linux/x64/release/bundle/bin/
           cp ffmpeg_temp/ffprobe build/linux/x64/release/bundle/bin/
           chmod +x build/linux/x64/release/bundle/bin/*
+
+      - name: Create Linux .DEB Package
+        if: matrix.platform == 'linux'
+        run: |
+          # 1. Подготовка структуры папок
+          mkdir -p deb_root/DEBIAN
+          mkdir -p deb_root/usr/bin
+          mkdir -p deb_root/opt/creos
+          mkdir -p deb_root/usr/share/applications
+          mkdir -p deb_root/usr/share/icons/hicolor/256x256/apps
+          
+          # 2. Копируем файлы приложения в /opt/creos
+          cp -r build/linux/x64/release/bundle/* deb_root/opt/creos/
+          
+          # 3. Создаем симлинк в /usr/bin
+          ln -s /opt/creos/creos deb_root/usr/bin/creos
+          
+          # 4. Копируем иконку
+          cp assets/images/logo-creos-highres.png deb_root/usr/share/icons/hicolor/256x256/apps/creos.png
+          
+          # 5. Создаем .desktop файл
+          cat > deb_root/usr/share/applications/creos.desktop <<EOF
+          [Desktop Entry]
+          Name=Creos Video Converter
+          Comment=Professional video converter with automatic bitrate calculation
+          Exec=creos
+          Icon=creos
+          Terminal=false
+          Type=Application
+          Categories=AudioVideo;Video;
+          EOF
+          
+          # 6. Создаем файл контроля (control)
+          cat > deb_root/DEBIAN/control <<EOF
+          Package: creos
+          Version: 1.0.0
+          Section: utils
+          Priority: optional
+          Architecture: amd64
+          Maintainer: Creos <support@creos.me>
+          Description: Creos Video Converter
+           Professional video converter with automatic bitrate calculation and FFmpeg bundling.
+          EOF
+          
+          # 7. Фиксим права доступа
+          chmod -R 755 deb_root
+          
+          # 8. Собираем пакет
+          dpkg-deb --build deb_root creos-video-converter-linux.deb
 
       - name: Bundle FFmpeg (macOS Apple Silicon)
         if: matrix.platform == 'macos'
@@ -142,7 +191,7 @@ jobs:
           elif [ "${{ matrix.platform }}" == "macos" ]; then
             echo "path=Creos-Video-Converter-macOS.dmg" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.platform }}" == "linux" ]; then
-            echo "path=build/linux/x64/release/bundle" >> $GITHUB_OUTPUT
+            echo "path=creos-video-converter-linux.deb" >> $GITHUB_OUTPUT
           fi
 
       - name: Upload Artifacts
