@@ -43,10 +43,10 @@ dev_dependencies:
 flutter_launcher_icons:
   android: false
   ios: false
-  image_path: "assets/images/logo-creos.png"
+  image_path: "logo-creos.ico"
   macos:
     generate: true
-    image_path: "assets/images/logo-creos.png"
+    image_path: "logo-creos.ico"
 
 flutter:
   uses-material-design: true

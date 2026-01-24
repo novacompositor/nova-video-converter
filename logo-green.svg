@@ -4,9 +4,9 @@
 <svg
    version="1.1"
    id="svg1"
-   width="177"
-   height="45"
-   viewBox="0 0 177 45"
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
    sodipodi:docname="jira-logo-scaled_green.svg"
    inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -42,9 +42,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="3.4302341"
-     inkscape:cx="96.349109"
-     inkscape:cy="29.152529"
+     inkscape:zoom="12.180316"
+     inkscape:cx="12.068653"
+     inkscape:cy="23.562608"
      inkscape:window-width="1440"
      inkscape:window-height="847"
      inkscape:window-x="0"
@@ -57,22 +57,22 @@
      inkscape:label="Image 1"
      style="display:inline">
     <path
-       style="fill:#0bef34;fill-opacity:1;stroke-width:8.48891;stroke-linejoin:round;paint-order:markers fill stroke"
-       d="m 77.642753,1.9115345 29.554937,9.6442445 a 6.6298938,6.6298938 0 0 1 2.21589,11.37237 L 86.770108,42.01195 A 9.7789947,9.7789947 0 0 1 70.871335,36.413514 L 66.113218,12.11313 A 8.9266784,8.9266784 0 0 1 77.642753,1.9115345 Z"
+       style="fill:#0bef34;fill-opacity:1;stroke-width:6.07905;stroke-linejoin:round;paint-order:markers fill stroke"
+       d="M 8.2919751,0.56395562 28.805191,7.6897447 a 4.6016152,4.8985927 0 0 1 1.537984,8.4026393 L 14.627005,30.192726 A 6.7873139,7.225351 0 0 1 3.5921317,26.056242 L 0.28966201,8.1015525 A 6.1957461,6.5956051 0 0 1 8.2919751,0.56395562 Z"
        id="path1"
        sodipodi:nodetypes="cccc" />
     <path
        id="path1-9"
-       style="display:inline;fill:#000000;fill-opacity:1;stroke-width:8.48891;stroke-linejoin:round;paint-order:markers fill stroke"
-       d="m 92.197351,6.6615311 c -3.204153,3.2257721 -5.192837,7.6591729 -5.192837,12.5278779 0,6.464189 3.506474,12.164213 8.707735,15.28606 l 7.976611,-6.722722 c -4.276911,-0.540231 -7.508689,-4.122512 -7.508689,-8.563338 0,-4.61464 3.489086,-8.302311 8.014989,-8.612687 z" />
+       style="display:inline;fill:#000000;fill-opacity:1;stroke-width:6.07905;stroke-linejoin:round;paint-order:markers fill stroke"
+       d="M 18.393895,4.0735591 C 16.169987,6.4569674 14.7897,9.7326494 14.7897,13.329962 c 0,4.77616 2.433739,8.987705 6.043783,11.294326 l 5.536332,-4.96718 c -2.968479,-0.399157 -5.211561,-3.045976 -5.211561,-6.327146 0,-3.4095929 2.421672,-6.1342822 5.562969,-6.3636076 z" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Image 2">
     <path
-       style="fill:#000000;stroke-width:8.48891;stroke-linejoin:round;paint-order:markers fill stroke"
-       d="M 74.480812,9.5363649 84.868338,8.3973846 84.809652,35.425207 74.709113,35.477449 Z"
+       style="fill:#000000;stroke-width:6.07905;stroke-linejoin:round;paint-order:markers fill stroke"
+       d="m 6.097364,6.1976716 7.209678,-0.8415521 -0.04073,19.9698965 -7.0104883,0.0386 z"
        id="path2"
        sodipodi:nodetypes="ccccc" />
   </g>

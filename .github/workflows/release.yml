@@ -94,17 +94,26 @@ jobs:
           chmod +x "$app_path/Contents/MacOS/creos"
           chmod +x "$app_path/Contents/Frameworks/"*
           
-          # Очистка атрибутов (чтобы реже вылетало "damaged app")
+          # Очистка атрибутов
           xattr -cr "$app_path"
           
-          # 2. Подготовка папки для DMG
+          # 2. AD-HOC SIGNING (Критический шаг для обхода Gatekeeper "Damaged" ошибки)
+          # Это переводит ошибку в категорию "Unknown Developer", которую легко разрешить в настройках
+          codesign --force --deep --sign - "$app_path"
+          
+          # 3. Подготовка папки для DMG
           mkdir -p dmg_temp
           cp -R "$app_path" dmg_temp/
           
-          # 3. Добавление ярлыка в Applications (для Drag-and-Drop)
+          # 4. Добавление ярлыка в Applications и инструкции
           ln -s /Applications dmg_temp/Applications
+          echo "Если приложение не запускается и пишет 'Повреждено':" > "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
+          echo "1. Перетяните creos в папку Applications (Программы)." >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
+          echo "2. Откройте Терминал и введите команду:" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
+          echo "   xattr -cr /Applications/creos.app" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
+          echo "3. Теперь приложение запустится." >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
           
-          # 4. Создаем DMG образ
+          # 5. Создаем DMG образ
           hdiutil create -volname "Creos Video Converter" -srcfolder dmg_temp -ov -format UDZO Creos-Video-Converter-macOS.dmg
 
       - name: Bundle FFmpeg (Windows)
@@ -119,7 +128,7 @@ jobs:
       - name: Prepare Windows Release (MSIX)
         if: matrix.platform == 'windows'
         run: |
-          flutter pub run msix:create --display-name="Creos Video Converter"
+          flutter pub run msix:create --display-name="Creos Video Converter" --logo-path="logo-creos.ico"
 
       - name: Determine Artifact Path
         id: artifact_info
