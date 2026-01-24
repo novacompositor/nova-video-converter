@@ -54,7 +54,7 @@ jobs:
 
       - name: Build App
         run: |
-          if [ "${{ matrix.platform }}" == "macos" ]; then
+          if [ "${{ matrix.platform }}" == "macos" ] || [ "${{ matrix.platform }}" == "windows" ]; then
             flutter pub run flutter_launcher_icons
           fi
           ${{ matrix.build_cmd }}
@@ -127,16 +127,18 @@ jobs:
           find ffmpeg_temp -name "ffmpeg.exe" -exec mv {} build/windows/x64/runner/Release/bin/ \;
           find ffmpeg_temp -name "ffprobe.exe" -exec mv {} build/windows/x64/runner/Release/bin/ \;
 
-      - name: Prepare Windows Release (MSIX)
+      - name: Create Windows Installer (EXE)
         if: matrix.platform == 'windows'
         run: |
-          flutter pub run msix:create --display-name="Creos Video Converter" --logo-path="assets/images/logo-creos-highres.png"
+          # Используем Inno Setup (предустановлен на windows-latest)
+          # Компилируем инсталлятор из .iss скрипта
+          "C:\Program Files (x86)\Inno Setup 6\iscc.exe" windows/inno-setup.iss
 
       - name: Determine Artifact Path
         id: artifact_info
         run: |
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            echo "path=build/windows/x64/runner/Release/*.msix" >> $GITHUB_OUTPUT
+            echo "path=windows/Creos-Video-Converter-Installer.exe" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.platform }}" == "macos" ]; then
             echo "path=Creos-Video-Converter-macOS.dmg" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.platform }}" == "linux" ]; then
