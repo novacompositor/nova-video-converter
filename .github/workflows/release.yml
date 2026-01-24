@@ -107,11 +107,13 @@ jobs:
           
           # 4. Добавление ярлыка в Applications и инструкции
           ln -s /Applications dmg_temp/Applications
-          echo "Если приложение не запускается и пишет 'Повреждено':" > "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
+          echo "Так как приложение не зарегистрировано в App Store, оно может не запускаться." > "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
+          echo "" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
+          echo "Если вы видите ошибку 'Программа повреждена':" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
           echo "1. Перетяните creos в папку Applications (Программы)." >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
           echo "2. Откройте Терминал и введите команду:" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
           echo "   xattr -cr /Applications/creos.app" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
-          echo "3. Теперь приложение запустится." >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
+          echo "3. Теперь приложение запустится без ошибок." >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
           
           # 5. Создаем DMG образ
           hdiutil create -volname "Creos Video Converter" -srcfolder dmg_temp -ov -format UDZO Creos-Video-Converter-macOS.dmg
