@@ -128,7 +128,7 @@ jobs:
       - name: Prepare Windows Release (MSIX)
         if: matrix.platform == 'windows'
         run: |
-          flutter pub run msix:create --display-name="Creos Video Converter" --logo-path="logo-creos.ico"
+          flutter pub run msix:create --display-name="Creos Video Converter" --logo-path="assets/images/logo-creos-highres.png"
 
       - name: Determine Artifact Path
         id: artifact_info
