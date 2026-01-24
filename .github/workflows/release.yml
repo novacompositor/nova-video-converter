@@ -82,6 +82,16 @@ jobs:
           curl -L https://github.com/shaka-project/static-ffmpeg-binaries/releases/download/n7.1-2/ffprobe-osx-arm64 -o "$target_dir/ffprobe"
           chmod +x "$target_dir"/*
 
+      - name: Create macOS DMG
+        if: matrix.platform == 'macos'
+        run: |
+          # Фиксим права доступа (иначе приложение не запустится после скачивания)
+          chmod +x build/macos/Build/Products/Release/creos.app/Contents/MacOS/creos
+          chmod +x build/macos/Build/Products/Release/creos.app/Contents/Frameworks/*
+          
+          # Создаем DMG образ для удобной установки
+          hdiutil create -volname "Creos Video Converter" -srcfolder build/macos/Build/Products/Release/creos.app -ov -format UDZO Creos-Video-Converter-macOS.dmg
+
       - name: Bundle FFmpeg (Windows)
         if: matrix.platform == 'windows'
         run: |
@@ -102,7 +112,7 @@ jobs:
           if [ "${{ matrix.platform }}" == "windows" ]; then
             echo "path=build/windows/x64/runner/Release/*.msix" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            echo "path=build/macos/Build/Products/Release/creos.app" >> $GITHUB_OUTPUT
+            echo "path=Creos-Video-Converter-macOS.dmg" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.platform }}" == "linux" ]; then
             echo "path=build/linux/x64/release/bundle" >> $GITHUB_OUTPUT
           fi
