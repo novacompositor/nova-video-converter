@@ -21,7 +21,7 @@ dependencies:
   path: ^1.8.3
   
   # UI компоненты  
-  google_fonts: 6.2.1
+  google_fonts: 6.1.0
   flutter_animate: ^4.3.0
   percent_indicator: ^4.2.3
   flutter_svg: ^2.0.9
@@ -73,4 +73,6 @@ msix_config:
   install: false
   install_certificate: false
 
+dependency_overrides:
+  google_fonts: 6.1.0
 
