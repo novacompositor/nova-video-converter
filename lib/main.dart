@@ -49,6 +49,17 @@ class NovaApp extends ConsumerWidget {
         Locale('ru', ''),
         Locale('en', ''),
       ],
+      localeResolutionCallback: (deviceLocale, supportedLocales) {
+        if (deviceLocale != null) {
+          for (var locale in supportedLocales) {
+            if (locale.languageCode == deviceLocale.languageCode) {
+              return deviceLocale;
+            }
+          }
+        }
+        // По умолчанию английский, если язык системы не русский и не английский
+        return const Locale('en', '');
+      },
       
       home: const HomeScreen(),
     );
