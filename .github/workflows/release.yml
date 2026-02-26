@@ -248,5 +248,24 @@ jobs:
           path: ${{ steps.artifact_info.outputs.path }}
           if-no-files-found: error
 
-
-
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: output_artifacts
+          merge-multiple: true
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: output_artifacts/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
