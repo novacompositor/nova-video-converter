@@ -1,7 +1,7 @@
-import 'package:creos/core/constants/app_constants.dart';
-import 'package:creos/data/models/video_models.dart';
-import 'package:creos/ffmpeg/bitrate_calculator.dart';
-import 'package:creos/ffmpeg/ffmpeg_service.dart';
+import 'package:nova/core/constants/app_constants.dart';
+import 'package:nova/data/models/video_models.dart';
+import 'package:nova/ffmpeg/bitrate_calculator.dart';
+import 'package:nova/ffmpeg/ffmpeg_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
@@ -240,7 +240,7 @@ class ConversionStateNotifier extends StateNotifier<ConversionState> {
       final baseName = path.basenameWithoutExtension(file.videoInfo.filePath);
       final outputPath = path.join(
         outputDir,
-        '${baseName}_creos.${settings.outputFormat.extension}',
+        '${baseName}_nova.${settings.outputFormat.extension}',
       );
       
       filesNotifier.updateProgress(

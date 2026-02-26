@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:creos/core/theme/app_theme.dart';
-import 'package:creos/presentation/screens/home_screen.dart';
-import 'package:creos/presentation/providers/app_providers.dart';
+import 'package:nova/core/theme/app_theme.dart';
+import 'package:nova/presentation/screens/home_screen.dart';
+import 'package:nova/presentation/providers/app_providers.dart';
 
 void main() {
   runApp(
     const ProviderScope(
-      child: CreosApp(),
+      child: NovaApp(),
     ),
   );
 }
 
-class CreosApp extends ConsumerWidget {
-  const CreosApp({super.key});
+class NovaApp extends ConsumerWidget {
+  const NovaApp({super.key});
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = ref.watch(isDarkModeProvider);
     
     return MaterialApp(
-      title: 'Creos',
+      title: 'Nova',
       debugShowCheckedModeBanner: false,
       theme: isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme,
       home: const HomeScreen(),

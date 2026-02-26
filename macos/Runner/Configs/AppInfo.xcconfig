@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = creos
+PRODUCT_NAME = nova
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.creos.creos
+PRODUCT_BUNDLE_IDENTIFIER = com.nova.videoconverter
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.creos. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 com.nova. All rights reserved.

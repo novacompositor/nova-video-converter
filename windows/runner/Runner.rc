@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.creos" "\0"
-            VALUE "FileDescription", "creos" "\0"
+            VALUE "CompanyName", "com.nova" "\0"
+            VALUE "FileDescription", "nova" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "creos" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.creos. All rights reserved." "\0"
-            VALUE "OriginalFilename", "creos.exe" "\0"
-            VALUE "ProductName", "creos" "\0"
+            VALUE "InternalName", "nova" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.nova. All rights reserved." "\0"
+            VALUE "OriginalFilename", "nova.exe" "\0"
+            VALUE "ProductName", "nova" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

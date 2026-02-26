@@ -3,14 +3,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:creos/core/theme/app_theme.dart';
-import 'package:creos/core/constants/app_constants.dart';
-import 'package:creos/data/models/video_models.dart';
-import 'package:creos/ffmpeg/bitrate_calculator.dart';
-import 'package:creos/presentation/providers/app_providers.dart';
-import 'package:creos/presentation/widgets/file_card.dart';
-import 'package:creos/presentation/widgets/settings_widgets.dart';
-import 'package:creos/presentation/widgets/common_widgets.dart';
+import 'package:nova/core/theme/app_theme.dart';
+import 'package:nova/core/constants/app_constants.dart';
+import 'package:nova/data/models/video_models.dart';
+import 'package:nova/ffmpeg/bitrate_calculator.dart';
+import 'package:nova/presentation/providers/app_providers.dart';
+import 'package:nova/presentation/widgets/file_card.dart';
+import 'package:nova/presentation/widgets/settings_widgets.dart';
+import 'package:nova/presentation/widgets/common_widgets.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -108,7 +108,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () async {
-                 final url = Uri.parse('https://creos.me/');
+                 final url = Uri.parse('https://github.com/novacompositor/nova-video-converter');
                  if (await canLaunchUrl(url)) {
                    await launchUrl(url);
                  }

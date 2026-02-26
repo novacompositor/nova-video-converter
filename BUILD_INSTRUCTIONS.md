@@ -1,4 +1,4 @@
-# Инструкция по сборке Creos Video Converter
+# Инструкция по сборке Nova Video Converter
 
 Это приложение разработано на Flutter. Для корректной работы **необходимо** встроить бинарные файлы FFmpeg, так как приложение ищет их рядом с собой.
 
@@ -16,23 +16,23 @@ flutter build windows --release
 
 ### 3. Комплектация (Важно!)
 После сборки перейдите в папку `build/windows/x64/runner/Release/`.
-Там должен лежать файл `creos.exe`.
+Там должен лежать файл `nova.exe`.
 
 1. Скачайте FFmpeg для Windows (например, с [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) - build 'essentials' или 'full').
 2. Из скачанного архива извлеките файлы `ffmpeg.exe` и `ffprobe.exe`.
-3. **Скопируйте** их в папку с `creos.exe`.
+3. **Скопируйте** их в папку с `nova.exe`.
 
 Структура папки должна быть такой:
 ```
 Release/
-  ├── creos.exe
+  ├── nova.exe
   ├── ffmpeg.exe
   ├── ffprobe.exe
   ├── data/
   └── ...
 ```
 
-Теперь папку `Release` можно запаковать в архив и распространять. При запуске `creos.exe` консоль открываться не будет.
+Теперь папку `Release` можно запаковать в архив и распространять. При запуске `nova.exe` консоль открываться не будет.
 
 ---
 
@@ -51,22 +51,22 @@ flutter build macos --release
 
 ### 3. Комплектация
 После сборки перейдите в `build/macos/Build/Products/Release/`.
-Там будет лежать приложение `creos.app`.
+Там будет лежать приложение `nova.app`.
 
 Для встраивания FFmpeg внутрь приложения:
 
 1. Скачайте FFmpeg для macOS (например, с [evermeet.cx](https://evermeet.cx/ffmpeg/)). Также скачайте FFprobe.
-2. Кликните правой кнопкой на `creos.app` и выберите "Показать содержимое пакета" (Show Package Contents).
+2. Кликните правой кнопкой на `nova.app` и выберите "Показать содержимое пакета" (Show Package Contents).
 3. Перейдите в `Contents/Resources`.
 4. **Скопируйте** туда файлы `ffmpeg` и `ffprobe`.
 5. Убедитесь, что у них есть права на исполнение (`chmod +x ffmpeg ffprobe`).
 
 Структура:
 ```
-creos.app/
+nova.app/
   └── Contents/
         ├── MacOS/
-        │     └── creos (сам бинарник)
+        │     └── nova (сам бинарник)
         └── Resources/
               ├── AppIcon.icns
               ├── ffmpeg  <-- ВАЖНО
@@ -78,4 +78,4 @@ creos.app/
 ---
 
 ## Linux
-Для Linux просто положите бинарники `ffmpeg` и `ffprobe` рядом с исполняемым файлом `creos` (в папку `bundle`).
+Для Linux просто положите бинарники `ffmpeg` и `ffprobe` рядом с исполняемым файлом `nova` (в папку `bundle`).

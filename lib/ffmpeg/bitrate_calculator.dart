@@ -1,5 +1,5 @@
-import 'package:creos/core/constants/app_constants.dart';
-import 'package:creos/data/models/video_models.dart';
+import 'package:nova/core/constants/app_constants.dart';
+import 'package:nova/data/models/video_models.dart';
 
 /// Калькулятор битрейта для достижения целевого размера файла
 class BitrateCalculator {

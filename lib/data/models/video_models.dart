@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:creos/core/constants/app_constants.dart';
+import 'package:nova/core/constants/app_constants.dart';
 
 /// Модель информации о видео файле
 class VideoInfo {

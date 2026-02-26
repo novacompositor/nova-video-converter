@@ -81,22 +81,22 @@ jobs:
         run: |
           # 1. ПОДГОТОВКА СТРУКТУРЫ (Shared)
           mkdir -p pkg_root/usr/bin
-          mkdir -p pkg_root/opt/creos
+          mkdir -p pkg_root/opt/nova
           mkdir -p pkg_root/usr/share/applications
           mkdir -p pkg_root/usr/share/icons/hicolor/256x256/apps
           
           # Копируем основные файлы
-          cp -r build/linux/x64/release/bundle/* pkg_root/opt/creos/
-          ln -s /opt/creos/creos pkg_root/usr/bin/creos
-          cp assets/images/logo-creos-highres.png pkg_root/usr/share/icons/hicolor/256x256/apps/creos.png
+          cp -r build/linux/x64/release/bundle/* pkg_root/opt/nova/
+          ln -s /opt/nova/nova pkg_root/usr/bin/nova
+          cp assets/images/logo-nova-highres.png pkg_root/usr/share/icons/hicolor/256x256/apps/nova.png
           
           # Создаем .desktop файл
-          cat > pkg_root/usr/share/applications/creos.desktop <<EOF
+          cat > pkg_root/usr/share/applications/nova.desktop <<EOF
           [Desktop Entry]
-          Name=Creos Video Converter
+          Name=Nova Video Converter
           Comment=Professional video converter with automatic bitrate calculation
-          Exec=creos
-          Icon=creos
+          Exec=nova
+          Icon=nova
           Terminal=false
           Type=Application
           Categories=AudioVideo;Video;
@@ -106,58 +106,58 @@ jobs:
           mkdir -p deb_root/DEBIAN
           cp -r pkg_root/* deb_root/ 2>/dev/null || cp -R pkg_root/. deb_root/
           cat > deb_root/DEBIAN/control <<EOF
-          Package: creos
+          Package: nova
           Version: 1.0.0
           Section: utils
           Priority: optional
           Architecture: amd64
-          Maintainer: Creos <support@creos.me>
-          Description: Creos Video Converter
+          Maintainer: Nova <support@nova.me>
+          Description: Nova Video Converter
            Professional video converter with automatic bitrate calculation and FFmpeg bundling.
           EOF
           chmod -R 755 deb_root
-          dpkg-deb --build deb_root creos-video-converter-linux.deb
+          dpkg-deb --build deb_root nova-video-converter-linux.deb
           
           # --- СБОРКА .PKG.TAR.ZST (Arch Linux) ---
           mkdir -p arch_root
           cp -r pkg_root/* arch_root/ 2>/dev/null || cp -R pkg_root/. arch_root/
           cat > arch_root/.PKGINFO <<EOF
-          pkgname = creos
+          pkgname = nova
           pkgver = 1.0.0
           pkgrel = 1
-          pkgdesc = Creos Video Converter
+          pkgdesc = Nova Video Converter
           arch = x86_64
-          url = https://creos.me
+          url = https://nova.me
           license = MIT
           depend = gtk3
           depend = libgcrypt
           depend = liblzma
           EOF
           cd arch_root
-          tar -c --zstd -f ../creos-video-converter-linux.pkg.tar.zst .
+          tar -c --zstd -f ../nova-video-converter-linux.pkg.tar.zst .
           cd ..
           
           # --- СБОРКА .RPM (Fedora/CentOS) ---
           mkdir -p rpm_root/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-          mkdir -p rpm_root/BUILDROOT/creos-1.0.0-1.x86_64
-          cp -r pkg_root/* rpm_root/BUILDROOT/creos-1.0.0-1.x86_64/
-          cat > rpm_root/SPECS/creos.spec <<EOF
-          Name:           creos
+          mkdir -p rpm_root/BUILDROOT/nova-1.0.0-1.x86_64
+          cp -r pkg_root/* rpm_root/BUILDROOT/nova-1.0.0-1.x86_64/
+          cat > rpm_root/SPECS/nova.spec <<EOF
+          Name:           nova
           Version:        1.0.0
           Release:        1%{?dist}
-          Summary:        Creos Video Converter
+          Summary:        Nova Video Converter
           License:        MIT
-          URL:            https://creos.me
+          URL:            https://nova.me
           Requires:       gtk3, libgcrypt, xz-libs
           
           %description
           Professional video converter.
           
           %files
-          /opt/creos/*
-          /usr/bin/creos
-          /usr/share/applications/creos.desktop
-          /usr/share/icons/hicolor/256x256/apps/creos.png
+          /opt/nova/*
+          /usr/bin/nova
+          /usr/share/applications/nova.desktop
+          /usr/share/icons/hicolor/256x256/apps/nova.png
           
           %post
           /bin/touch --no-create /usr/share/icons/hicolor &>/dev/null || :
@@ -168,13 +168,13 @@ jobs:
               /usr/bin/gtk-update-icon-cache /usr/share/icons/hicolor &>/dev/null || :
           fi
           EOF
-          rpmbuild --define "_topdir $(pwd)/rpm_root" -bb rpm_root/SPECS/creos.spec
-          cp rpm_root/RPMS/x86_64/*.rpm creos-video-converter-linux.rpm
+          rpmbuild --define "_topdir $(pwd)/rpm_root" -bb rpm_root/SPECS/nova.spec
+          cp rpm_root/RPMS/x86_64/*.rpm nova-video-converter-linux.rpm
 
       - name: Bundle FFmpeg (macOS Apple Silicon)
         if: matrix.platform == 'macos'
         run: |
-          target_dir="build/macos/Build/Products/Release/creos.app/Contents/Frameworks"
+          target_dir="build/macos/Build/Products/Release/nova.app/Contents/Frameworks"
           mkdir -p "$target_dir"
           # Используем нативные ARM64 бинарники от Shaka Project (Google)
           curl -L https://github.com/shaka-project/static-ffmpeg-binaries/releases/download/n7.1-2/ffmpeg-osx-arm64 -o "$target_dir/ffmpeg"
@@ -185,8 +185,8 @@ jobs:
         if: matrix.platform == 'macos'
         run: |
           # 1. Фиксим права доступа и убираем карантин
-          app_path="build/macos/Build/Products/Release/creos.app"
-          chmod +x "$app_path/Contents/MacOS/creos"
+          app_path="build/macos/Build/Products/Release/nova.app"
+          chmod +x "$app_path/Contents/MacOS/nova"
           chmod +x "$app_path/Contents/Frameworks/"*
           
           # Очистка атрибутов
@@ -205,13 +205,13 @@ jobs:
           echo "Так как приложение не зарегистрировано в App Store, оно может не запускаться." > "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
           echo "" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
           echo "Если вы видите ошибку 'Программа повреждена':" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
-          echo "1. Перетяните creos в папку Applications (Программы)." >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
+          echo "1. Перетяните Nova в папку Applications (Программы)." >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
           echo "2. Откройте Терминал и введите команду:" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
-          echo "   xattr -cr /Applications/creos.app" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
+          echo "   xattr -cr /Applications/nova.app" >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
           echo "3. Теперь приложение запустится без ошибок." >> "dmg_temp/ИНСТРУКЦИЯ (ЕСЛИ НЕ ЗАПУСКАЕТСЯ).txt"
           
           # 5. Создаем DMG образ
-          hdiutil create -volname "Creos Video Converter" -srcfolder dmg_temp -ov -format UDZO Creos-Video-Converter-macOS.dmg
+          hdiutil create -volname "Nova Video Converter" -srcfolder dmg_temp -ov -format UDZO Nova-Video-Converter-macOS.dmg
 
       - name: Bundle FFmpeg (Windows)
         if: matrix.platform == 'windows'
@@ -233,12 +233,12 @@ jobs:
         id: artifact_info
         run: |
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            echo "path=windows/Creos-Video-Converter-Installer.exe" >> $GITHUB_OUTPUT
+            echo "path=windows/Nova-Video-Converter-Installer.exe" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            echo "path=Creos-Video-Converter-macOS.dmg" >> $GITHUB_OUTPUT
+            echo "path=Nova-Video-Converter-macOS.dmg" >> $GITHUB_OUTPUT
           elif [ "${{ matrix.platform }}" == "linux" ]; then
             # Загружаем все три формата пакетов
-            echo "path=creos-video-converter-linux*" >> $GITHUB_OUTPUT
+            echo "path=nova-video-converter-linux*" >> $GITHUB_OUTPUT
           fi
 
       - name: Upload Artifacts

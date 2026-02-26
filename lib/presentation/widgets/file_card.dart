@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:creos/core/theme/app_theme.dart';
-import 'package:creos/data/models/video_models.dart';
+import 'package:nova/core/theme/app_theme.dart';
+import 'package:nova/data/models/video_models.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 /// Карточка файла для конвертации

@@ -1,5 +1,5 @@
-name: creos
-description: "Creos - Профессиональный конвертер видео с автоматическим расчётом битрейта"
+name: nova
+description: "Nova - Профессиональный конвертер видео с автоматическим расчётом битрейта"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -43,16 +43,16 @@ dev_dependencies:
 flutter_launcher_icons:
   android: false
   ios: false
-  image_path: "assets/images/logo-creos-highres.png"
+  image_path: "assets/images/logo-nova-highres.png"
   macos:
     generate: true
-    image_path: "assets/images/logo-creos-highres.png"
+    image_path: "assets/images/logo-nova-highres.png"
   windows:
     generate: true
-    image_path: "assets/images/logo-creos-highres.png"
+    image_path: "assets/images/logo-nova-highres.png"
   linux:
     generate: true
-    image_path: "assets/images/logo-creos-highres.png"
+    image_path: "assets/images/logo-nova-highres.png"
 
 flutter:
   uses-material-design: true
@@ -61,14 +61,14 @@ flutter:
     - assets/images/
 
 msix_config:
-  display_name: Creos Video Converter
-  publisher_display_name: Creos
-  publisher: CN=Creos
-  identity_name: creos.videoconverter
+  display_name: Nova Video Converter
+  publisher_display_name: Nova
+  publisher: CN=Nova
+  identity_name: nova.videoconverter
   msix_version: 1.0.0.0
-  logo_path: assets/images/logo-creos.png
+  logo_path: assets/images/logo-nova-highres.png
   capabilities: internetClient
-  execution_alias: creos
+  execution_alias: nova
   install_location: localappdata
   install: false
   install_certificate: false

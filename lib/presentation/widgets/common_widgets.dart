@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:desktop_drop/desktop_drop.dart';
-import 'package:creos/core/theme/app_theme.dart';
+import 'package:nova/core/theme/app_theme.dart';
 
 /// Зона для перетаскивания файлов
 class DropZone extends StatefulWidget {

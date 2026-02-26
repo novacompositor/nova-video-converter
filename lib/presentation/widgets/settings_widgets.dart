@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:creos/core/theme/app_theme.dart';
-import 'package:creos/core/constants/app_constants.dart';
+import 'package:nova/core/theme/app_theme.dart';
+import 'package:nova/core/constants/app_constants.dart';
 
 /// Переключатель режима кодирования (1 проход / 2 прохода)
 class EncodingModeSelector extends StatelessWidget {

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:creos/data/models/video_models.dart';
-import 'package:creos/ffmpeg/bitrate_calculator.dart';
+import 'package:nova/data/models/video_models.dart';
+import 'package:nova/ffmpeg/bitrate_calculator.dart';
 import 'package:path/path.dart' as path;
 
 /// Сервис для работы с FFmpeg
@@ -236,7 +236,7 @@ class FFmpegService {
     final filters = _buildVideoFilters(settings);
     
     // Создаем временную директорию для файлов статистики
-    final tempDir = Directory.systemTemp.createTempSync('creos_');
+    final tempDir = Directory.systemTemp.createTempSync('nova_');
     final passLogFile = path.join(tempDir.path, 'ffmpeg2pass');
     
     try {

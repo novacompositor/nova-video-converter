@@ -1,6 +1,6 @@
 class AppConstants {
   // Название приложения
-  static const String appName = 'Creos';
+  static const String appName = 'Nova';
   static const String appVersion = '1.0.0';
   static const String appDescription = 'Профессиональный конвертер видео';
   

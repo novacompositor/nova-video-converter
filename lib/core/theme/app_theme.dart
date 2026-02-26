@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
-  // Основные цвета (из логотипа Creos)
-  static const Color primary = Color(0xFF00D563);
-  static const Color primaryLight = Color(0xFF4AE88E);
-  static const Color primaryDark = Color(0xFF00A34B);
+  // Основные цвета (из логотипа Nova)
+  static const Color primary = Color(0xFF00B4D3);
+  static const Color primaryLight = Color(0xFF00F2F0);
+  static const Color primaryDark = Color(0xFF0081B9);
   
   // Тёмная тема
   static const Color darkBackground = Color(0xFF0A0A0A);
@@ -25,7 +25,7 @@ class AppColors {
   static const Color textMuted = Color(0xFF707070);
   
   // Статусы
-  static const Color success = Color(0xFF00D563);
+  static const Color success = Color(0xFF00D563); // Оставляем зеленый для успеха
   static const Color warning = Color(0xFFFFB800);
   static const Color error = Color(0xFFFF4757);
   static const Color info = Color(0xFF3498DB);
