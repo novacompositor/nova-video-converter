@@ -16,12 +16,12 @@ dependencies:
   riverpod_annotation: ^2.3.3
   
   # Работа с файлами
-  file_picker: ^6.1.1
+  file_picker: ^8.1.4
   path_provider: ^2.1.2
   path: ^1.8.3
   
   # UI компоненты  
-  google_fonts: ^6.1.0
+  google_fonts: 6.2.1
   flutter_animate: ^4.3.0
   percent_indicator: ^4.2.3
   flutter_svg: ^2.0.9
