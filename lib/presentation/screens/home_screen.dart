@@ -11,6 +11,7 @@ import 'package:nova/presentation/providers/app_providers.dart';
 import 'package:nova/presentation/widgets/file_card.dart';
 import 'package:nova/presentation/widgets/settings_widgets.dart';
 import 'package:nova/presentation/widgets/common_widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -31,6 +32,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     BitrateValidation? validation;
     if (files.isNotEmpty) {
       validation = BitrateCalculator.validateSettings(
+        context: context,
         videoInfo: files.first.videoInfo,
         settings: settings,
       );
@@ -158,7 +160,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Файлы для конвертации',
+                AppLocalizations.of(context)!.filesForConversion,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -171,7 +173,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ref.read(filesProvider.notifier).clearFiles();
                   },
                   icon: const Icon(Icons.clear_all, size: 18),
-                  label: const Text('Очистить'),
+                  label: Text(AppLocalizations.of(context)!.clearAll),
                   style: TextButton.styleFrom(
                     foregroundColor: isDarkMode ? AppColors.textMuted : Colors.grey,
                   ),
@@ -218,9 +220,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 color: AppColors.primary,
                                 size: 18,
                               ),
-                              const SizedBox(width: 8),
+                                const SizedBox(width: 8),
                               Text(
-                                'Добавить файлы',
+                                AppLocalizations.of(context)!.addFiles,
                                 style: TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
@@ -274,13 +276,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Настройки',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: isDarkMode ? AppColors.textPrimary : Colors.black87,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.settingsTitle,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: isDarkMode ? AppColors.textPrimary : Colors.black87,
+                ),
+              ),
+              // Language Switcher Snippet
+              DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: ref.watch(localeProvider)?.languageCode ?? 'system',
+                  icon: const Icon(Icons.language, size: 18),
+                  alignment: AlignmentDirectional.centerEnd,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDarkMode ? AppColors.textSecondary : Colors.grey.shade800,
+                  ),
+                  dropdownColor: isDarkMode ? AppColors.darkCard : Colors.white,
+                  items: [
+                    DropdownMenuItem(
+                      value: 'system',
+                      child: Text(AppLocalizations.of(context)!.systemLanguage),
+                    ),
+                    DropdownMenuItem(
+                      value: 'ru',
+                      child: Text(AppLocalizations.of(context)!.russianLanguage),
+                    ),
+                    DropdownMenuItem(
+                      value: 'en',
+                      child: Text(AppLocalizations.of(context)!.englishLanguage),
+                    ),
+                  ],
+                  onChanged: (val) {
+                    if (val == 'system') {
+                      ref.read(localeProvider.notifier).setLocale(null);
+                    } else if (val != null) {
+                      ref.read(localeProvider.notifier).setLocale(Locale(val));
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           
@@ -346,7 +387,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   if (validation != null)
                     QualityInfoPanel(
                       calculatedBitrate: validation.calculatedBitrate,
-                      qualityLevel: validation.qualityLevel.label,
+                      qualityLevel: validation.qualityLevel.getLabel(context),
                       qualityEmoji: validation.qualityLevel.emoji,
                       message: validation.message,
                     ).animate().fadeIn(duration: 300.ms),

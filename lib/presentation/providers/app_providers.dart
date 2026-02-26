@@ -2,10 +2,48 @@ import 'package:nova/core/constants/app_constants.dart';
 import 'package:nova/data/models/video_models.dart';
 import 'package:nova/ffmpeg/bitrate_calculator.dart';
 import 'package:nova/ffmpeg/ffmpeg_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+
+/// Провайдер для SharedPreferences
+final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+  throw UnimplementedError('sharedPreferencesProvider must be overridden in main.dart');
+});
+
+/// Провайдер активной локали (языка)
+final localeProvider = StateNotifierProvider<LocaleNotifier, Locale?>((ref) {
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return LocaleNotifier(prefs);
+});
+
+class LocaleNotifier extends StateNotifier<Locale?> {
+  final SharedPreferences _prefs;
+  static const _localeKey = 'app_locale';
+  
+  LocaleNotifier(this._prefs) : super(_loadLocale(_prefs));
+  
+  static Locale? _loadLocale(SharedPreferences prefs) {
+    final languageCode = prefs.getString(_localeKey);
+    if (languageCode != null && languageCode.isNotEmpty) {
+      return Locale(languageCode);
+    }
+    return null; // System default
+  }
+  
+  Future<void> setLocale(Locale? locale) async {
+    state = locale;
+    if (locale == null) {
+      await _prefs.remove(_localeKey);
+    } else {
+      await _prefs.setString(_localeKey, locale.languageCode);
+    }
+  }
+}
+
 
 /// Провайдер сервиса FFmpeg
 final ffmpegServiceProvider = Provider<FFmpegService>((ref) {

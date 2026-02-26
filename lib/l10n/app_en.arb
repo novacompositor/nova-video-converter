@@ -1,0 +1,89 @@
+{
+  "@@locale": "en",
+  "appTitle": "Nova",
+  "filesForConversion": "Files for Conversion",
+  "clearAll": "Clear All",
+  "dropFilesHere": "Drop video files here",
+  "releaseFilesHere": "Release files here",
+  "orClickToSelect": "or click to select files",
+  "supportedFormats": "MP4, MKV, AVI, MOV, WebM and others",
+  "addFiles": "Add Files",
+  
+  "settingsTitle": "Settings",
+  
+  "targetSizeLabel": "Target Size (MB)",
+  "targetSizeHint": "Optimal: ~",
+  
+  "encodingModeLabel": "Encoding Mode",
+  "fastConversion": "Fast Conversion (1-pass)",
+  "bestQuality": "Best Quality (2-pass)",
+  
+  "formatLabel": "Format",
+  
+  "audioBitrateLabel": "Audio (kbps)",
+  "audioHigh": "High",
+  "audioStandard": "Standard",
+  "audioLow": "Compressed",
+  
+  "resolutionLabel": "Resolution",
+  "resolutionOriginal": "Original",
+  
+  "scalingLabel": "Scaling Mode",
+  "scaleProportional": "Proportional",
+  "scaleCrop": "Crop",
+  "scaleStretch": "Stretch",
+  "scalePad": "Add padding",
+  
+  "estimatedResult": "Estimated Result",
+  "videoBitrate": "Video Bitrate",
+  "qualityLabel": "Quality",
+  
+  "qualityVeryLow": "Very Low",
+  "qualityLow": "Low",
+  "qualityMedium": "Medium",
+  "qualityGood": "Good",
+  "qualityHigh": "High",
+  "qualityExcellent": "Excellent",
+  "qualityError": "Error",
+  
+  "msgQualityVeryLow": "Very low quality: bitrate is too small. Increase target size.",
+  "msgQualityLow": "Low quality: compression artifacts are likely.",
+  "msgQualityMedium": "Medium quality: acceptable for most videos.",
+  "msgQualityGood": "Good quality: great for normal viewing.",
+  "msgQualityHigh": "High quality: excellent result.",
+  "msgQualityExcellent": "Excellent quality.",
+  "msgTargetLargerThanOriginal": "Warning: target size is larger than the original",
+  "msgDurationError": "Error: video duration is undefined.",
+  
+  "btnStartConversion": "Start Conversion",
+  "btnConverting": "Converting...",
+  "btnCancel": "Cancel",
+  
+  "statusWaiting": "Waiting",
+  "statusConverting": "Converting",
+  "statusDone": "Done",
+  "statusError": "Error",
+  
+  "fileInfoSize": "Size:",
+  "fileInfoDuration": "Duration:",
+  "fileInfoOriginal": "Original:",
+  
+  "notificationSuccessTitle": "Conversion Complete",
+  "notificationSuccessBody": "All files have been successfully processed.",
+  "notificationErrorTitle": "Conversion Error",
+  "notificationErrorBody": "An error occurred while processing some files.",
+  "notificationCancelTitle": "Conversion Canceled",
+  "notificationCancelBody": "The conversion process was aborted by the user.",
+  
+  "languageLabel": "Language / Язык",
+  "selectLanguage": "Select Language",
+  "systemLanguage": "System",
+  "russianLanguage": "Русский",
+  "englishLanguage": "English",
+  
+  "lightTheme": "Light Theme",
+  "darkTheme": "Dark Theme",
+  
+  "openFolder": "Open Folder",
+  "removeFile": "Remove"
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nova/core/theme/app_theme.dart';
 import 'package:nova/core/constants/app_constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Переключатель режима кодирования (1 проход / 2 прохода)
 class EncodingModeSelector extends StatelessWidget {
@@ -23,7 +24,7 @@ class EncodingModeSelector extends StatelessWidget {
         Row(
           children: [
             Text(
-              'Режим кодирования',
+              AppLocalizations.of(context)!.encodingModeLabel,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
@@ -70,21 +71,15 @@ class EncodingModeSelector extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          '1 проход',
+                          AppLocalizations.of(context)!.fastConversion,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: selectedPasses == 1 ? FontWeight.w600 : FontWeight.normal,
                             color: selectedPasses == 1 ? AppColors.primary : (isDark ? AppColors.textPrimary : Colors.black87),
-                            fontSize: 13,
+                            fontSize: 12,
                           ),
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          'Быстрее',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: isDark ? AppColors.textMuted : Colors.grey,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -111,11 +106,12 @@ class EncodingModeSelector extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '2 прохода',
+                              AppLocalizations.of(context)!.bestQuality,
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: selectedPasses == 2 ? FontWeight.w600 : FontWeight.normal,
                                 color: selectedPasses == 2 ? AppColors.primary : (isDark ? AppColors.textPrimary : Colors.black87),
-                                fontSize: 13,
+                                fontSize: 12,
                               ),
                             ),
                             const SizedBox(width: 4),
@@ -139,13 +135,6 @@ class EncodingModeSelector extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          'Рекомендуется',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: isDark ? AppColors.textMuted : Colors.grey,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -216,7 +205,7 @@ class _TargetSizeInputState extends State<TargetSizeInput> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Целевой размер файла',
+          AppLocalizations.of(context)!.targetSizeLabel,
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 14,
@@ -322,7 +311,7 @@ class _TargetSizeInputState extends State<TargetSizeInput> {
                     style: TextStyle(fontSize: 11, color: isDark ? AppColors.textSecondary : Colors.grey.shade600),
                   ),
                   Text(
-                    '${widget.originalSize.toStringAsFixed(0)} МБ',
+                    '${AppLocalizations.of(context)!.targetSizeHint} ${widget.originalSize.toStringAsFixed(0)}',
                     style: TextStyle(fontSize: 11, color: isDark ? AppColors.textMuted : Colors.grey),
                   ),
                 ],
@@ -354,7 +343,7 @@ class FormatSelector extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Формат вывода',
+          AppLocalizations.of(context)!.formatLabel,
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 14,
@@ -415,7 +404,7 @@ class AudioBitrateSelector extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Битрейт аудио',
+          AppLocalizations.of(context)!.audioBitrateLabel,
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 14,
@@ -441,7 +430,7 @@ class AudioBitrateSelector extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  bitrate.label,
+                  _getAudioLabel(context, bitrate),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
@@ -522,7 +511,7 @@ class _ResolutionSelectorState extends State<ResolutionSelector> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Разрешение видео',
+          AppLocalizations.of(context)!.resolutionLabel,
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 14,
@@ -555,7 +544,7 @@ class _ResolutionSelectorState extends State<ResolutionSelector> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Оригинальное',
+                  AppLocalizations.of(context)!.resolutionOriginal,
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: _useOriginal ? FontWeight.w600 : FontWeight.normal,
@@ -665,7 +654,7 @@ class _ResolutionSelectorState extends State<ResolutionSelector> {
                       border: widget.scaleMode == 'fit' ? Border.all(color: AppColors.primary) : null,
                     ),
                     child: Text(
-                      'Растянуть',
+                      AppLocalizations.of(context)!.scaleStretch,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
@@ -686,7 +675,7 @@ class _ResolutionSelectorState extends State<ResolutionSelector> {
                       border: widget.scaleMode == 'crop' ? Border.all(color: AppColors.primary) : null,
                     ),
                     child: Text(
-                      'Обрезать',
+                      AppLocalizations.of(context)!.scaleCrop,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,

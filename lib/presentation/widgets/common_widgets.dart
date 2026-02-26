@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:nova/core/theme/app_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Зона для перетаскивания файлов
 class DropZone extends StatefulWidget {
@@ -76,8 +77,8 @@ class _DropZoneState extends State<DropZone> {
                 const SizedBox(height: 20),
                 Text(
                   _isDragging 
-                      ? 'Отпустите файлы здесь'
-                      : 'Перетащите видео файлы сюда',
+                      ? AppLocalizations.of(context)!.releaseFilesHere
+                      : AppLocalizations.of(context)!.dropFilesHere,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
@@ -86,7 +87,7 @@ class _DropZoneState extends State<DropZone> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'или нажмите для выбора файлов',
+                  AppLocalizations.of(context)!.orClickToSelect,
                   style: TextStyle(
                     fontSize: 14,
                     color: isDark ? AppColors.textSecondary : Colors.grey.shade600,
@@ -100,7 +101,7 @@ class _DropZoneState extends State<DropZone> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    'MP4, MKV, AVI, MOV, WebM и другие форматы',
+                    AppLocalizations.of(context)!.supportedFormats,
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.primary,
@@ -159,7 +160,7 @@ class QualityInfoPanel extends StatelessWidget {
               Icon(Icons.analytics_outlined, color: AppColors.primary, size: 20),
               const SizedBox(width: 8),
               Text(
-                'Предполагаемый результат',
+                AppLocalizations.of(context)!.estimatedResult,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
@@ -173,7 +174,7 @@ class QualityInfoPanel extends StatelessWidget {
             children: [
               Expanded(
                 child: _InfoItem(
-                  label: 'Битрейт видео',
+                  label: AppLocalizations.of(context)!.videoBitrate,
                   value: '${calculatedBitrate} kbps',
                   icon: Icons.speed,
                 ),
@@ -181,7 +182,7 @@ class QualityInfoPanel extends StatelessWidget {
               const SizedBox(width: 16),
               Expanded(
                 child: _InfoItem(
-                  label: 'Качество',
+                  label: AppLocalizations.of(context)!.qualityLabel,
                   value: '$qualityEmoji $qualityLevel',
                   icon: Icons.high_quality,
                 ),
@@ -328,7 +329,7 @@ class ConvertButton extends StatelessWidget {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          'Конвертация... ${(progress * 100).toStringAsFixed(0)}%',
+                          '${AppLocalizations.of(context)!.btnConverting} ${(progress * 100).toStringAsFixed(0)}%',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -343,7 +344,7 @@ class ConvertButton extends StatelessWidget {
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
-                            'Отмена',
+                            AppLocalizations.of(context)!.btnCancel,
                             style: TextStyle(
                               fontSize: 12,
                               color: AppColors.error,
@@ -383,9 +384,9 @@ class ConvertButton extends StatelessWidget {
           children: [
             Icon(Icons.play_arrow_rounded, size: 28),
             const SizedBox(width: 8),
-            const Text(
-              'Начать конвертацию',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.btnStartConversion,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 inherit: false, // Важно для предотвращения краша анимации

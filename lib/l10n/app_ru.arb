@@ -1,0 +1,89 @@
+{
+  "@@locale": "ru",
+  "appTitle": "Nova",
+  "filesForConversion": "Файлы для конвертации",
+  "clearAll": "Очистить",
+  "dropFilesHere": "Перетащите видео файлы сюда",
+  "releaseFilesHere": "Отпустите файлы здесь",
+  "orClickToSelect": "или нажмите для выбора файлов",
+  "supportedFormats": "MP4, MKV, AVI, MOV, WebM и другие форматы",
+  "addFiles": "Добавить файлы",
+  
+  "settingsTitle": "Настройки",
+  
+  "targetSizeLabel": "Целевой размер (МБ)",
+  "targetSizeHint": "Оптимально: ~",
+  
+  "encodingModeLabel": "Режим кодирования",
+  "fastConversion": "Быстрая конвертация (1-pass)",
+  "bestQuality": "Лучшее качество (2-pass)",
+  
+  "formatLabel": "Формат",
+  
+  "audioBitrateLabel": "Аудио (kbps)",
+  "audioHigh": "Высокое",
+  "audioStandard": "Стандарт",
+  "audioLow": "Сжатое",
+  
+  "resolutionLabel": "Разрешение",
+  "resolutionOriginal": "Оригинал",
+  
+  "scalingLabel": "Масштабирование",
+  "scaleProportional": "Пропорционально",
+  "scaleCrop": "Обрезать",
+  "scaleStretch": "Растянуть",
+  "scalePad": "Добавить поля",
+  
+  "estimatedResult": "Предполагаемый результат",
+  "videoBitrate": "Битрейт видео",
+  "qualityLabel": "Качество",
+  
+  "qualityVeryLow": "Очень низкое",
+  "qualityLow": "Низкое",
+  "qualityMedium": "Среднее",
+  "qualityGood": "Хорошее",
+  "qualityHigh": "Высокое",
+  "qualityExcellent": "Превосходное",
+  "qualityError": "Ошибка",
+  
+  "msgQualityVeryLow": "Очень низкое качество: битрейт слишком мал. Увеличьте целевой размер.",
+  "msgQualityLow": "Низкое качество: возможны артефакты сжатия.",
+  "msgQualityMedium": "Среднее качество: приемлемо для большинства видео.",
+  "msgQualityGood": "Хорошее качество: отлично для обычного просмотра.",
+  "msgQualityHigh": "Высокое качество: отличный результат.",
+  "msgQualityExcellent": "Превосходное качество.",
+  "msgTargetLargerThanOriginal": "Внимание: целевой размер больше исходного",
+  "msgDurationError": "Ошибка: длительность видео не определена.",
+  
+  "btnStartConversion": "Начать конвертацию",
+  "btnConverting": "Конвертация...",
+  "btnCancel": "Отмена",
+  
+  "statusWaiting": "Ожидает",
+  "statusConverting": "Конвертируется",
+  "statusDone": "Готово",
+  "statusError": "Ошибка",
+  
+  "fileInfoSize": "Размер:",
+  "fileInfoDuration": "Длительность:",
+  "fileInfoOriginal": "Оригинал:",
+  
+  "notificationSuccessTitle": "Конвертация завершена",
+  "notificationSuccessBody": "Все файлы успешно обработаны.",
+  "notificationErrorTitle": "Ошибка конвертации",
+  "notificationErrorBody": "Произошла ошибка при обработке некоторых файлов.",
+  "notificationCancelTitle": "Конвертация отменена",
+  "notificationCancelBody": "Процесс конвертации был прерван пользователем.",
+  
+  "languageLabel": "Язык / Language",
+  "selectLanguage": "Выбор языка",
+  "systemLanguage": "Системный",
+  "russianLanguage": "Русский",
+  "englishLanguage": "English",
+  
+  "lightTheme": "Светлая тема",
+  "darkTheme": "Тёмная тема",
+  
+  "openFolder": "Открыть папку",
+  "removeFile": "Удалить"
+}

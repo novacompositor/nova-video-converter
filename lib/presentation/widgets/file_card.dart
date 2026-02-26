@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:nova/core/theme/app_theme.dart';
 import 'package:nova/data/models/video_models.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Карточка файла для конвертации
 class FileCard extends StatelessWidget {
@@ -135,7 +136,7 @@ class FileCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Сохранено: ${file.outputPath}',
+                          '${AppLocalizations.of(context)!.statusDone}: ${file.outputPath}',
                           style: TextStyle(color: AppColors.success, fontSize: 13),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -161,9 +162,9 @@ class FileCard extends StatelessWidget {
             color: AppColors.textMuted.withOpacity(0.2),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Text(
-            'Ожидание',
-            style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+          child: Text(
+            AppLocalizations.of(context)!.statusWaiting,
+            style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
           ),
         );
       case ConversionStatus.processing:

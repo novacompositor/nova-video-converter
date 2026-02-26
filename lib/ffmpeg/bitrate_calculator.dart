@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:nova/core/constants/app_constants.dart';
 import 'package:nova/data/models/video_models.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Калькулятор битрейта для достижения целевого размера файла
 class BitrateCalculator {
@@ -66,6 +68,7 @@ class BitrateCalculator {
   /// 
   /// Возвращает объект с результатом проверки
   static BitrateValidation validateSettings({
+    required BuildContext context,
     required VideoInfo videoInfo,
     required ConversionSettings settings,
   }) {
@@ -74,7 +77,7 @@ class BitrateCalculator {
     if (durationSeconds <= 0) {
       return BitrateValidation(
         isValid: false,
-        message: 'Ошибка: длительность видео не определена',
+        message: AppLocalizations.of(context)!.msgDurationError,
         calculatedBitrate: 0,
         qualityLevel: QualityLevel.invalid,
       );
@@ -92,27 +95,27 @@ class BitrateCalculator {
     
     if (videoBitrate <= AppConstants.minVideoBitrate) {
       qualityLevel = QualityLevel.veryLow;
-      message = 'Очень низкое качество: битрейт слишком мал. Увеличьте целевой размер или уменьшите битрейт аудио.';
+      message = AppLocalizations.of(context)!.msgQualityVeryLow;
     } else if (videoBitrate < 500) {
       qualityLevel = QualityLevel.low;
-      message = 'Низкое качество: возможны артефакты сжатия';
+      message = AppLocalizations.of(context)!.msgQualityLow;
     } else if (videoBitrate < 1500) {
       qualityLevel = QualityLevel.medium;
-      message = 'Среднее качество: приемлемо для большинства видео';
+      message = AppLocalizations.of(context)!.msgQualityMedium;
     } else if (videoBitrate < 4000) {
       qualityLevel = QualityLevel.good;
-      message = 'Хорошее качество: отлично для обычного просмотра';
+      message = AppLocalizations.of(context)!.msgQualityGood;
     } else if (videoBitrate < 8000) {
       qualityLevel = QualityLevel.high;
-      message = 'Высокое качество: отличный результат';
+      message = AppLocalizations.of(context)!.msgQualityHigh;
     } else {
       qualityLevel = QualityLevel.excellent;
-      message = 'Превосходное качество';
+      message = AppLocalizations.of(context)!.msgQualityExcellent;
     }
     
     // Проверяем, не больше ли целевой размер исходного
     if (settings.targetSizeMB >= videoInfo.fileSizeMB) {
-      message = 'Внимание: целевой размер больше или равен исходному (${videoInfo.fileSizeFormatted})';
+      message = '${AppLocalizations.of(context)!.msgTargetLargerThanOriginal} (${videoInfo.fileSizeFormatted})';
     }
     
     return BitrateValidation(
@@ -175,22 +178,22 @@ enum QualityLevel {
 }
 
 extension QualityLevelExtension on QualityLevel {
-  String get label {
+  String getLabel(BuildContext context) {
     switch (this) {
       case QualityLevel.invalid:
-        return 'Ошибка';
+        return AppLocalizations.of(context)!.qualityError;
       case QualityLevel.veryLow:
-        return 'Очень низкое';
+        return AppLocalizations.of(context)!.qualityVeryLow;
       case QualityLevel.low:
-        return 'Низкое';
+        return AppLocalizations.of(context)!.qualityLow;
       case QualityLevel.medium:
-        return 'Среднее';
+        return AppLocalizations.of(context)!.qualityMedium;
       case QualityLevel.good:
-        return 'Хорошее';
+        return AppLocalizations.of(context)!.qualityGood;
       case QualityLevel.high:
-        return 'Высокое';
+        return AppLocalizations.of(context)!.qualityHigh;
       case QualityLevel.excellent:
-        return 'Превосходное';
+        return AppLocalizations.of(context)!.qualityExcellent;
     }
   }
   
