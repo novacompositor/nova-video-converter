@@ -52,11 +52,12 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Generate Localizations
+        run: flutter gen-l10n
+
       - name: Build App
         run: |
-          if [ "${{ matrix.platform }}" == "macos" ] || [ "${{ matrix.platform }}" == "windows" ] || [ "${{ matrix.platform }}" == "linux" ]; then
-            flutter pub run flutter_launcher_icons
-          fi
+          flutter pub run flutter_launcher_icons
           ${{ matrix.build_cmd }}
 
       - name: Debug Output Directory
