@@ -79,7 +79,7 @@ class FileCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  _buildStatusIcon(),
+                  _buildStatusIcon(context),
                   const SizedBox(width: 8),
                   IconButton(
                     onPressed: onRemove,
@@ -153,7 +153,7 @@ class FileCard extends StatelessWidget {
     ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1, end: 0);
   }
   
-  Widget _buildStatusIcon() {
+  Widget _buildStatusIcon(BuildContext context) {
     switch (file.status) {
       case ConversionStatus.pending:
         return Container(

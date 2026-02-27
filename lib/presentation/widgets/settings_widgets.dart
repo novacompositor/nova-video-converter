@@ -395,6 +395,16 @@ class AudioBitrateSelector extends StatelessWidget {
     required this.selectedBitrate,
     required this.onChanged,
   });
+
+  String _getAudioLabel(BuildContext context, AudioBitrate bitrate) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (bitrate.value) {
+      case 320: return '${l10n.audioHigh} (320)';
+      case 192: return '${l10n.audioStandard} (192)';
+      case 128: return '${l10n.audioLow} (128)';
+      default: return '${bitrate.value} kbps';
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
