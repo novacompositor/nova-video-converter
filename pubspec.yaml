@@ -58,6 +58,7 @@ flutter_launcher_icons:
     image_path: "assets/images/logo-nova-highres.png"
 
 flutter:
+  generate: true
   uses-material-design: true
   
   assets:
