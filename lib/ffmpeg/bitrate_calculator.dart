@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nova/core/constants/app_constants.dart';
 import 'package:nova/data/models/video_models.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nova/l10n/app_localizations.dart';
 
 /// Калькулятор битрейта для достижения целевого размера файла
 class BitrateCalculator {

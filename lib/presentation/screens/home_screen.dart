@@ -11,7 +11,7 @@ import 'package:nova/presentation/providers/app_providers.dart';
 import 'package:nova/presentation/widgets/file_card.dart';
 import 'package:nova/presentation/widgets/settings_widgets.dart';
 import 'package:nova/presentation/widgets/common_widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nova/l10n/app_localizations.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});

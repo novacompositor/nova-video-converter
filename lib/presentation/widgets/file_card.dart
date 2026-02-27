@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:nova/core/theme/app_theme.dart';
 import 'package:nova/data/models/video_models.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nova/l10n/app_localizations.dart';
 
 /// Карточка файла для конвертации
 class FileCard extends StatelessWidget {
