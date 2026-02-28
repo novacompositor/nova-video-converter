@@ -362,38 +362,47 @@ class ConvertButton extends StatelessWidget {
       );
     }
     
+    // Кнопка "Начать конвертацию" с градиентом
     return SizedBox(
       width: double.infinity,
       height: 56,
-      child: ElevatedButton(
-        onPressed: isEnabled ? onPressed : null,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.black,
-          disabledBackgroundColor: Theme.of(context).brightness == Brightness.dark 
-              ? AppColors.darkBorder 
-              : Colors.grey.shade300,
-          disabledForegroundColor: AppColors.textMuted,
-          shape: RoundedRectangleBorder(
+      child: Opacity(
+        opacity: isEnabled ? 1.0 : 0.4,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: isEnabled 
+                ? AppColors.primaryGradient 
+                : const LinearGradient(colors: [Color(0xFF444444), Color(0xFF444444)]),
             borderRadius: BorderRadius.circular(16),
-          ),
-          // Убираем textStyle отсюда, чтобы не было конфликтов интерполяции
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.play_arrow_rounded, size: 28),
-            const SizedBox(width: 8),
-            Text(
-              AppLocalizations.of(context)!.btnStartConversion,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                inherit: false, // Важно для предотвращения краша анимации
-                color: Colors.black, // Явно задаем цвет
+            boxShadow: isEnabled ? [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.35),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
               ),
+            ] : [],
+          ),
+          child: MaterialButton(
+            onPressed: isEnabled ? onPressed : null,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-          ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.play_arrow_rounded, size: 28, color: Colors.white),
+                const SizedBox(width: 8),
+                Text(
+                  AppLocalizations.of(context)!.btnStartConversion,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     ).animate(target: isEnabled ? 1 : 0)

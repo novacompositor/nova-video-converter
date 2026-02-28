@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
-  // Основные цвета (из логотипа Nova)
-  static const Color primary = Color(0xFF00B4D3);
-  static const Color primaryLight = Color(0xFF00F2F0);
-  static const Color primaryDark = Color(0xFF0081B9);
+  // Основные цвета (градиент Nova)
+  static const Color primary = Color(0xFF00E5EF);       // teal-cyan
+  static const Color primaryLight = Color(0xFF4ABDE8);  // mid-blend
+  static const Color primaryDark = Color(0xFF6A29B2);   // purple
   
   // Тёмная тема
   static const Color darkBackground = Color(0xFF0A0A0A);
@@ -24,17 +24,17 @@ class AppColors {
   static const Color textSecondary = Color(0xFFB0B0B0);
   static const Color textMuted = Color(0xFF707070);
   
-  // Статусы
-  static const Color success = Color(0xFF00D563); // Оставляем зеленый для успеха
+  // Статусы — success переводим в accent, не зелёный
+  static const Color success = Color(0xFF00E5EF);  // brand accent вместо зелёного
   static const Color warning = Color(0xFFFFB800);
   static const Color error = Color(0xFFFF4757);
   static const Color info = Color(0xFF3498DB);
   
   // Градиенты
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [primary, primaryLight],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+    colors: [Color(0xFF00E5EF), Color(0xFF6A29B2)],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
   );
   
   static const LinearGradient darkGradient = LinearGradient(
