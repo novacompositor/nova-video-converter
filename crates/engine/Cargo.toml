@@ -1,0 +1,27 @@
+[package]
+name = "engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+engine_api = { path = "../engine_api" }
+project_schema = { path = "../project_schema" }
+media_image = { path = "../media_image" }
+timeline_core = { path = "../timeline_core" }
+effects_core = { path = "../effects_core" }
+render_graph = { path = "../render_graph" }
+audio_engine = { path = "../audio_engine" }
+# media_ffmpeg is optional — requires system FFmpeg libs (libavcodec etc.)
+media_ffmpeg = { path = "../media_ffmpeg", optional = true }
+
+[features]
+default = []
+ffmpeg = ["media_ffmpeg"]

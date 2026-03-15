@@ -1,0 +1,20 @@
+[package]
+name = "media_image"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+# Raster images (PNG, JPG, WebP, TIFF)
+image = "0.25"
+
+# PSD support
+psd = "0.3"
+
+# SVG Vector graphics
+resvg = "0.43"
+usvg = "0.43"
+tiny-skia = "0.11" # Required by resvg to rasterize

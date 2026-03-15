@@ -1,0 +1,20 @@
+[package]
+name = "project_schema"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+thiserror.workspace = true
+chrono = { workspace = true }
+engine_api = { path = "../engine_api" }
+media_ffmpeg = { path = "../media_ffmpeg" }
+media_image = { path = "../media_image" }
+roxmltree = "0.21.1"
+
+[dev-dependencies]
+pretty_assertions = { workspace = true }
+tempfile = { workspace = true }

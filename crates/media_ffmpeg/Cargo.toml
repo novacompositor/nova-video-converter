@@ -1,0 +1,19 @@
+[package]
+name = "media_ffmpeg"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+thiserror = { workspace = true }
+tracing = { workspace = true }
+ffmpeg-next = { version = "7", optional = true }
+serde = { workspace = true }
+uuid = { workspace = true, features = ["v4"] }
+
+[features]
+default = ["ffmpeg"]
+ffmpeg = ["ffmpeg-next"]
+
+[dev-dependencies]
+tempfile = { workspace = true }

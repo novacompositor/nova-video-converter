@@ -1,0 +1,10 @@
+[package]
+name = "render_graph"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+thiserror = { workspace = true }
+engine_api = { path = "../engine_api" }
