@@ -41,17 +41,21 @@ jobs:
           sudo apt-get install -y \
             libavcodec-dev libavformat-dev libavutil-dev \
             libavfilter-dev libswscale-dev libswresample-dev \
+            libavdevice-dev libpostproc-dev \
             libclang-dev clang
 
       # macOS: install FFmpeg via homebrew
       - name: Install FFmpeg (macOS)
         if: runner.os == 'macOS'
-        run: brew install ffmpeg
+        run: |
+          brew install ffmpeg pkg-config
+          echo "PKG_CONFIG_PATH=$(brew --prefix ffmpeg)/lib/pkgconfig" >> $GITHUB_ENV
 
       # Windows: install FFmpeg via chocolatey
       - name: Install FFmpeg (Windows)
         if: runner.os == 'Windows'
-        run: choco install ffmpeg-full -y
+        run: |
+          choco install ffmpeg-full pkgconfiglite -y
 
       - name: Cargo fmt check
         run: cargo fmt --all -- --check
