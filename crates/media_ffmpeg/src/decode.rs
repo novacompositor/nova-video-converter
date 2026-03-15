@@ -47,6 +47,7 @@ pub fn decode_frame_at(path: &Path, time_ms: i64) -> Result<VideoFrame, FfmpegEr
 fn decode_frame_at_impl(path: &Path, time_ms: i64) -> Result<VideoFrame, FfmpegError> {
     use ffmpeg_next as ffmpeg;
     use ffmpeg_next::format::Pixel;
+    use ffmpeg_next::media::Type;
     use ffmpeg_next::software::scaling::{context::Context as SwsContext, flag::Flags};
     use ffmpeg_next::util::frame::video::Video;
 
@@ -58,7 +59,7 @@ fn decode_frame_at_impl(path: &Path, time_ms: i64) -> Result<VideoFrame, FfmpegE
     let video_stream = input
         .streams()
         .best(ffmpeg_next::media::Type::Video)
-        .ok_or_else(|| FfmpegError::NoVideoStream)?;
+        .ok_or(FfmpegError::NoVideoStream)?;
 
     let video_stream_index = video_stream.index();
     let time_base = video_stream.time_base();
@@ -67,9 +68,6 @@ fn decode_frame_at_impl(path: &Path, time_ms: i64) -> Result<VideoFrame, FfmpegE
     // Calculate target PTS
     let time_base_f64 = f64::from(time_base.numerator()) / f64::from(time_base.denominator());
     let target_pts = ((time_ms as f64 / 1000.0) / time_base_f64) as i64;
-
-    // Drop the implicit borrow on `input` so we can seek mutably
-    drop(video_stream);
 
     // Seek to the target pts (keyframe before or at the target)
     let _ = input.seek(target_pts, ..target_pts);

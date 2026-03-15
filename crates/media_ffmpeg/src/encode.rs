@@ -49,7 +49,7 @@ pub fn encode_gif(
     );
 
     let status = Command::new(&ffmpeg_bin)
-        .args(&[
+        .args([
             "-i",
             &input.to_string_lossy(),
             "-vf",
@@ -73,7 +73,7 @@ pub fn encode_gif(
     );
 
     let status = Command::new(&ffmpeg_bin)
-        .args(&[
+        .args([
             "-i",
             &input.to_string_lossy(),
             "-i",
@@ -106,7 +106,7 @@ pub fn split_by_scenes(
 
     // Pass 1: Detect timestamps
     let output = Command::new(&ffmpeg_bin)
-        .args(&[
+        .args([
             "-i",
             &input.to_string_lossy(),
             "-vf",
@@ -159,7 +159,7 @@ pub fn split_by_scenes(
         let output_file = output_dir.join(format!("shot_{:04}.{}", i, file_ext));
 
         let mut cmd = Command::new(&ffmpeg_bin);
-        cmd.args(&[
+        cmd.args([
             "-ss",
             &start_time.to_string(),
             "-i",
@@ -167,10 +167,10 @@ pub fn split_by_scenes(
         ]);
 
         if end_time < 999998.0 {
-            cmd.args(&["-to", &(end_time - start_time).to_string()]);
+            cmd.args(["-to", &(end_time - start_time).to_string()]);
         }
 
-        cmd.args(&["-c", "copy", "-y", &output_file.to_string_lossy()]);
+        cmd.args(["-c", "copy", "-y", &output_file.to_string_lossy()]);
 
         let status = cmd
             .status()

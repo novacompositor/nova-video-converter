@@ -102,7 +102,6 @@ fn probe_impl(path: &Path) -> Result<MediaInfo, FfmpegError> {
     let mut streams = Vec::new();
     for stream in input.streams() {
         let codec_params = stream.parameters();
-        use ffmpeg_next::codec::Id;
         use ffmpeg_next::media::Type;
 
         let kind = match stream.parameters().medium() {
