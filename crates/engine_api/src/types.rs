@@ -43,7 +43,7 @@ impl RationalTime {
     /// Convert to frame index at given FPS.
     pub fn to_frame(&self, fps_num: u32, fps_den: u32) -> i64 {
         // value/rate * fps_num/fps_den
-        self.value as i64 * fps_num as i64 / (self.rate as i64 * fps_den as i64)
+        self.value * fps_num as i64 / (self.rate as i64 * fps_den as i64)
     }
 }
 
