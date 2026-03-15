@@ -50,19 +50,18 @@ jobs:
         run: |
           brew install ffmpeg pkg-config
           echo "PKG_CONFIG_PATH=$(brew --prefix ffmpeg)/lib/pkgconfig" >> $GITHUB_ENV
-          # Workaround for ffmpeg-sys-next header lookup on macOS
           echo "BINDGEN_EXTRA_CLANG_ARGS=-I$(brew --prefix ffmpeg)/include" >> $GITHUB_ENV
+          # Use FFMPEG_DIR as a hint for ffmpeg-sys-next
+          echo "FFMPEG_DIR=$(brew --prefix ffmpeg)" >> $GITHUB_ENV
 
-      # Windows: install FFmpeg via chocolatey
+      # Windows: install FFmpeg via vcpkg (pre-installed on GHA)
       - name: Install FFmpeg (Windows)
         if: runner.os == 'Windows'
         run: |
-          choco install ffmpeg-full pkgconfiglite -y
-          # Set FFMPEG_DIR suggest to ffmpeg-sys-next where to find libs/headers 
-          # Note: choco installs ffmpeg to C:\tools\ffmpeg or similar, but ffmpeg-full might be different.
-          # We search for it.
-          echo "FFMPEG_DIR=C:\ProgramData\chocolatey\lib\ffmpeg\tools\ffmpeg" >> $GITHUB_ENV
-          echo "PKG_CONFIG_PATH=C:\ProgramData\chocolatey\lib\ffmpeg\tools\ffmpeg\lib\pkgconfig" >> $GITHUB_ENV
+          vcpkg install ffmpeg:x64-windows
+          echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> $GITHUB_ENV
+          # Hint for ffmpeg-sys-next to use vcpkg
+          echo "FFMPEG_DIR=$VCPKG_INSTALLATION_ROOT\installed\x64-windows" >> $GITHUB_ENV
 
       - name: Cargo fmt check
         run: cargo fmt --all -- --check

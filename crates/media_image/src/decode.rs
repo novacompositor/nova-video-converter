@@ -59,7 +59,7 @@ pub fn decode_image(path: &Path) -> Result<ImageFrame, MediaImageError> {
         }
         ImageKind::Raster => {
             // Standard image crate
-            let img = image::io::Reader::open(path)?
+            let img = image::ImageReader::open(path)?
                 .with_guessed_format()?
                 .decode()?;
 

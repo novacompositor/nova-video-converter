@@ -26,7 +26,7 @@ pub fn probe_image(path: &Path) -> Result<ImageInfo, MediaImageError> {
 
     match ext.as_str() {
         "svg" => {
-            let svg_data = std::fs::read(&path)?;
+            let svg_data = std::fs::read(path)?;
             let opt = usvg::Options::default();
             // usvg 0.43 parse
             let tree = usvg::Tree::from_data(&svg_data, &opt)?;
@@ -41,7 +41,7 @@ pub fn probe_image(path: &Path) -> Result<ImageInfo, MediaImageError> {
             })
         }
         "psd" => {
-            let psd_data = std::fs::read(&path)?;
+            let psd_data = std::fs::read(path)?;
             let psd = psd::Psd::from_bytes(&psd_data)
                 .map_err(|e| MediaImageError::Other(e.to_string()))?;
 
@@ -55,7 +55,7 @@ pub fn probe_image(path: &Path) -> Result<ImageInfo, MediaImageError> {
         }
         _ => {
             // Let `image` crate figure it out (PNG, JPG, etc.)
-            let reader = image::io::Reader::open(path)?.with_guessed_format()?;
+            let reader = image::ImageReader::open(path)?.with_guessed_format()?;
             let format = reader.format().ok_or(MediaImageError::UnsupportedFormat)?;
 
             let dimensions = reader.into_dimensions()?;
