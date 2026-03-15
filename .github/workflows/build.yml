@@ -54,10 +54,10 @@ jobs:
         run: choco install ffmpeg-full -y
 
       - name: Cargo fmt check
-        run: cargo fmt --workspace -- --check
+        run: cargo fmt --all -- --check
 
       - name: Cargo clippy
-        run: cargo clippy --workspace -- -D warnings
+        run: cargo clippy --all -- -D warnings
 
       - name: Cargo test (workspace, no FFmpeg feature for speed)
         run: cargo test --workspace --no-default-features
