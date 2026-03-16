@@ -55,8 +55,6 @@ jobs:
           echo "FFMPEG_LIB_DIR=$PREFIX/lib" >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig" >> $GITHUB_ENV
           echo "BINDGEN_EXTRA_CLANG_ARGS=-I$PREFIX/include" >> $GITHUB_ENV
-          echo "CARGO_CFG_FFMPEG_7_0=1" >> $GITHUB_ENV
-          echo "CARGO_CFG_FFMPEG_7_1=1" >> $GITHUB_ENV
 
       # Windows: install FFmpeg via vcpkg (pre-installed on GHA)
       - name: Install FFmpeg (Windows)
@@ -70,8 +68,6 @@ jobs:
           echo "FFMPEG_LIB_DIR=$VCPKG_PREFIX\lib" >> $env:GITHUB_ENV
           echo "PKG_CONFIG_PATH=$VCPKG_PREFIX\lib\pkgconfig" >> $env:GITHUB_ENV
           echo "BINDGEN_EXTRA_CLANG_ARGS=-I$VCPKG_PREFIX\include" >> $env:GITHUB_ENV
-          echo "CARGO_CFG_FFMPEG_7_0=1" >> $env:GITHUB_ENV
-          echo "CARGO_CFG_FFMPEG_7_1=1" >> $env:GITHUB_ENV
 
       - name: Cargo fmt check
         run: cargo fmt --all -- --check
