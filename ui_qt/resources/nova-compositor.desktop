@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=0.1.0
+Type=Application
+Name=Nova Compositor
+GenericName=Video Compositor
+Comment=Professional video compositing and VFX application
+Exec=NovaCompositor %f
+Icon=nova-compositor
+Categories=AudioVideo;Video;Graphics;2DGraphics;
+MimeType=video/x-generic;image/x-generic;
+Keywords=video;compositing;vfx;editing;
+StartupWMClass=NovaCompositor
+StartupNotify=true

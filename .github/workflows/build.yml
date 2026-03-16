@@ -102,34 +102,281 @@ jobs:
           FFMPEG_DIR: ${{ env.FFMPEG_DIR }}
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # Qt UI build (Linux only for CI speed — add macOS/Windows later)
+  # Qt UI build & Package (Linux, macOS, Windows)
   # ─────────────────────────────────────────────────────────────────────────────
   qt_build:
-    name: Qt UI Build (Linux)
-    runs-on: ubuntu-22.04
+    name: Qt UI Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     needs: rust
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-14]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Qt6 and build tools
+      # ── Linux ────────────────────────────────────────────────────────────────
+      - name: Install Qt6 and build tools (Linux)
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update -y
           sudo apt-get install -y \
-            qt6-base-dev qt6-declarative-dev \
-            cmake ninja-build
+            qt6-base-dev qt6-declarative-dev qt6-quickcontrols2-dev \
+            cmake ninja-build \
+            libgl1-mesa-dev libvulkan-dev
 
-      - name: Configure CMake
+      - name: Install AppImage tools (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install -y \
+            desktop-file-utils libfuse2 \
+            appstream util-linux
+
+      - name: Download and setup linuxdeploy (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          chmod +x linuxdeploy-x86_64.AppImage
+          wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
+
+      - name: Configure CMake (Linux)
+        if: runner.os == 'Linux'
         run: |
           cmake -B ui_qt/build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -S ui_qt/
 
-      - name: Build Qt UI
+      - name: Build Qt UI (Linux)
+        if: runner.os == 'Linux'
         run: cmake --build ui_qt/build --parallel
 
-      - name: Upload UI artifact
+      - name: Create AppImage (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          cd ui_qt/build
+          ../linuxdeploy-x86_64.AppImage --appdir AppDir \
+            -e bin/NovaCompositor \
+            -i ../../ui_qt/resources/nova-compositor.png \
+            -d ../../ui_qt/resources/nova-compositor.desktop \
+            -p qt \
+            --output appimage
+
+      - name: Create DEB package (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          cd ui_qt/build
+          ../linuxdeploy-x86_64.AppImage --appdir AppDir \
+            -e bin/NovaCompositor \
+            -i ../../ui_qt/resources/nova-compositor.png \
+            -d ../../ui_qt/resources/nova-compositor.desktop \
+            -p qt \
+            --output deb
+
+      - name: Upload Linux artifacts
+        if: runner.os == 'Linux'
         uses: actions/upload-artifact@v4
         with:
           name: nova-compositor-linux-x86_64
-          path: ui_qt/build/NovaCompositor
+          path: |
+            ui_qt/build/NovaCompositor-*.AppImage
+            ui_qt/build/*.deb
+
+      # ── macOS ────────────────────────────────────────────────────────────────
+      - name: Install Qt6 (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install qt@6 cmake ninja
+          echo "$(brew --prefix qt@6)/bin" >> $GITHUB_PATH
+
+      - name: Configure CMake (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cmake -B ui_qt/build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 \
+            -S ui_qt/
+
+      - name: Build Qt UI (macOS)
+        if: runner.os == 'macOS'
+        run: cmake --build ui_qt/build --parallel
+
+      - name: Create DMG (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cd ui_qt/build
+          mkdir -p NovaCompositor.app/Contents/MacOS
+          mkdir -p NovaCompositor.app/Contents/Resources
+          cp bin/NovaCompositor NovaCompositor.app/Contents/MacOS/
+          cat > NovaCompositor.app/Contents/Info.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleExecutable</key><string>NovaCompositor</string>
+            <key>CFBundleIdentifier</key><string>com.novacompositor.app</string>
+            <key>CFBundleName</key><string>Nova Compositor</string>
+            <key>CFBundleVersion</key><string>0.1.0</string>
+            <key>CFBundleShortVersionString</key><string>0.1.0</string>
+            <key>CFBundlePackageType</key><string>APPL</string>
+            <key>LSMinimumSystemVersion</key><string>13.0</string>
+          </dict>
+          </plist>
+          EOF
+          # Create DMG
+          hdiutil create -volname "Nova Compositor" -srcfolder NovaCompositor.app -ov -format UDZO NovaCompositor-macos.dmg
+
+      - name: Upload macOS artifact
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nova-compositor-macos-arm64
+          path: ui_qt/build/NovaCompositor-*.dmg
+
+      # ── Windows ──────────────────────────────────────────────────────────────
+      - name: Install Qt6 (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          choco install qt6-base qt6-declarative qt6-quickcontrols2 cmake ninja -y
+          # Find Qt installation
+          $qtPath = Get-ChildItem -Path "C:\Qt" -Recurse -Filter "qmake.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty DirectoryName
+          if ($qtPath) {
+            echo "$qtPath" >> $env:GITHUB_PATH
+            echo "QT_PATH=$qtPath" >> $env:GITHUB_ENV
+          }
+
+      - name: Setup MSVC environment
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Configure CMake (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          cmake -B ui_qt\build -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_BUILD_TYPE=Release `
+            -S ui_qt\
+
+      - name: Build Qt UI (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: cmake --build ui_qt\build --config Release --parallel
+
+      - name: Copy Qt dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          # Copy Qt DLLs to build directory
+          $qtBin = Get-ChildItem -Path "C:\Qt" -Recurse -Filter "Qt6Core.dll" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty DirectoryName
+          if ($qtBin) {
+            Copy-Item "$qtBin\Qt6*.dll" -Destination "ui_qt\build\bin\" -Force
+            Copy-Item "$qtBin\*.dll" -Destination "ui_qt\build\bin\" -Force -ErrorAction SilentlyContinue
+          }
+
+      - name: Create Windows installer (NSIS)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          # Install NSIS
+          choco install nsis -y
+          
+          # Create NSIS installer script
+          $nsisScript = @"
+          !include "MUI2.nsh"
+          !define PRODUCT_NAME "Nova Compositor"
+          !define PRODUCT_VERSION "0.1.0"
+          !define PRODUCT_PUBLISHER "NovaCompositor"
+          !define PRODUCT_WEB_SITE "https://github.com/NovaCompositor/NovaCompositor"
+          
+          Name "${PRODUCT_NAME}"
+          OutFile "NovaCompositor-Setup.exe"
+          InstallDir "`$PROGRAMFILES\NovaCompositor"
+          
+          !insertmacro MUI_PAGE_WELCOME
+          !insertmacro MUI_PAGE_LICENSE "..\..\LICENSE"
+          !insertmacro MUI_PAGE_DIRECTORY
+          !insertmacro MUI_PAGE_INSTFILES
+          !insertmacro MUI_PAGE_FINISH
+          
+          !insertmacro MUI_LANGUAGE "English"
+          
+          Section "Install"
+            SetOutPath "`$INSTDIR"
+            File /r "ui_qt\build\bin\*.*"
+            File /r "ui_qt\build\bin\*"
+            WriteRegStr HKLM SOFTWARE\`${PRODUCT_NAME} "" `$INSTDIR
+            WriteUninstaller "`$INSTDIR\uninstall.exe"
+          SectionEnd
+          
+          Section "Uninstall"
+            DeleteRegKey HKLM SOFTWARE\`${PRODUCT_NAME}
+            Delete "`$INSTDIR\uninstall.exe"
+            RMDir /r "`$INSTDIR"
+          SectionEnd
+          "@
+          Set-Content -Path "ui_qt\build\installer.nsi" -Value $nsisScript
+          
+          # Build installer
+          & "C:\Program Files (x86)\NSIS\makensis.exe" /V2 "ui_qt\build\installer.nsi"
+          Move-Item "NovaCompositor-Setup.exe" "ui_qt\build\" -Force
+
+      - name: Upload Windows artifact
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nova-compositor-windows-x64
+          path: |
+            ui_qt/build/NovaCompositor-Setup.exe
+            ui_qt/build/bin/
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Create GitHub Release
+  # ─────────────────────────────────────────────────────────────────────────────
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-22.04
+    needs: qt_build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: nova-compositor-*
+          merge-multiple: false
+          path: artifacts/
+
+      - name: Generate changelog
+        run: |
+          echo "# Nova Compositor Release" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "## Changes" >> RELEASE_NOTES.md
+          git log --oneline -20 >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "## Installation" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### Linux" >> RELEASE_NOTES.md
+          echo "- **AppImage**: \`NovaCompositor-*.AppImage\` - portable version" >> RELEASE_NOTES.md
+          echo "- **DEB**: \`nova-compositor_*.deb\` - for Debian/Ubuntu" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### macOS" >> RELEASE_NOTES.md
+          echo "- **DMG**: \`NovaCompositor-*.dmg\` - drag to Applications" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "### Windows" >> RELEASE_NOTES.md
+          echo "- **Installer**: \`NovaCompositor-Setup.exe\` - run to install" >> RELEASE_NOTES.md
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v0.1.0-${{ github.run_number }}
+          name: Nova Compositor v0.1.0-${{ github.run_number }}
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: ${{ github.ref != 'refs/heads/main' }}
+          files: |
+            artifacts/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
