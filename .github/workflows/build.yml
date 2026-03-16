@@ -59,7 +59,7 @@ jobs:
       - name: Build Qt UI
         run: cmake --build ui_qt/build --parallel
 
-      - name: Create AppImage
+      - name: Create DEB package
         run: |
           cd ui_qt/build
           ../../linuxdeploy-x86_64.AppImage --appdir AppDir \
@@ -67,14 +67,7 @@ jobs:
             -i ../resources/nova-compositor.png \
             -d ../resources/nova-compositor.desktop \
             -p qt \
-            --output appimage
-
-      - name: Upload AppImage
-        uses: actions/upload-artifact@v4
-        with:
-          name: NovaCompositor-linux-x86_64.AppImage
-          path: ui_qt/build/*.AppImage
-          retention-days: 30
+            --output deb
 
       - name: Upload DEB
         uses: actions/upload-artifact@v4
@@ -105,7 +98,7 @@ jobs:
       - name: Download Linux artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: NovaCompositor-linux-*
+          pattern: NovaCompositor-*
           merge-multiple: true
           path: artifacts/
 
@@ -119,8 +112,8 @@ jobs:
           echo "## Installation" >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
           echo "### Linux" >> RELEASE_NOTES.md
-          echo "- **AppImage**: Portable version - chmod +x and run!" >> RELEASE_NOTES.md
           echo "- **DEB**: Install with \`sudo apt install ./nova-compositor_*.deb\`" >> RELEASE_NOTES.md
+          echo "- **Binary**: Extract and run \`./NovaCompositor\`" >> RELEASE_NOTES.md
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
