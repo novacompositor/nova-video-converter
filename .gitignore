@@ -15,3 +15,4 @@ blender-5.0.1-linux-x64/
 stitch-interface/
 .gemini/
 .agents/
+/ui_qt/test_build/
