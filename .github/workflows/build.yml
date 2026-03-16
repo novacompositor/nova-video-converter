@@ -32,7 +32,6 @@ jobs:
             qt6-base-dev qt6-declarative-dev \
             cmake ninja-build \
             libgl1-mesa-dev libvulkan-dev \
-            desktop-file-utils libfuse2 appstream \
             libqt6quickcontrols2-6
 
       - name: Install Rust
@@ -40,12 +39,6 @@ jobs:
 
       - name: Cache Cargo
         uses: Swatinem/rust-cache@v2
-
-      - name: Download linuxdeploy
-        run: |
-          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-          wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
-          chmod +x linuxdeploy-*.AppImage
 
       - name: Build Rust (release)
         run: cargo build --workspace --release
@@ -59,27 +52,10 @@ jobs:
       - name: Build Qt UI
         run: cmake --build ui_qt/build --parallel
 
-      - name: Create DEB package
-        run: |
-          cd ui_qt/build
-          ../../linuxdeploy-x86_64.AppImage --appdir AppDir \
-            -e bin/NovaCompositor \
-            -i ../resources/nova-compositor.png \
-            -d ../resources/nova-compositor.desktop \
-            -p qt \
-            --output deb
-
-      - name: Upload DEB
-        uses: actions/upload-artifact@v4
-        with:
-          name: NovaCompositor-linux-x86_64.deb
-          path: ui_qt/build/*.deb
-          retention-days: 30
-
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: NovaCompositor-linux-binary
+          name: NovaCompositor-linux-x86_64
           path: ui_qt/build/bin/NovaCompositor
           retention-days: 30
 
@@ -112,8 +88,11 @@ jobs:
           echo "## Installation" >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
           echo "### Linux" >> RELEASE_NOTES.md
-          echo "- **DEB**: Install with \`sudo apt install ./nova-compositor_*.deb\`" >> RELEASE_NOTES.md
-          echo "- **Binary**: Extract and run \`./NovaCompositor\`" >> RELEASE_NOTES.md
+          echo "1. Download \`NovaCompositor-linux-x86_64\`" >> RELEASE_NOTES.md
+          echo "2. Extract: \`tar -xvf NovaCompositor-linux-x86_64.tar\`" >> RELEASE_NOTES.md
+          echo "3. Run: \`./NovaCompositor\`" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "**Requirements**: Qt6, FFmpeg libraries must be installed." >> RELEASE_NOTES.md
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
