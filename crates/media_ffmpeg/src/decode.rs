@@ -47,7 +47,6 @@ pub fn decode_frame_at(path: &Path, time_ms: i64) -> Result<VideoFrame, FfmpegEr
 fn decode_frame_at_impl(path: &Path, time_ms: i64) -> Result<VideoFrame, FfmpegError> {
     use ffmpeg_next as ffmpeg;
     use ffmpeg_next::format::Pixel;
-    use ffmpeg_next::media::Type;
     use ffmpeg_next::software::scaling::{context::Context as SwsContext, flag::Flags};
     use ffmpeg_next::util::frame::video::Video;
 
