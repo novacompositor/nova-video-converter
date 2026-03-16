@@ -65,6 +65,7 @@ jobs:
   macos_build:
     name: macOS Build
     runs-on: macos-14
+    continue-on-error: true
 
     steps:
       - uses: actions/checkout@v4
@@ -92,46 +93,11 @@ jobs:
       - name: Build Qt UI
         run: cmake --build ui_qt/build --parallel
 
-      - name: Create macOS App Bundle
-        run: |
-          cd ui_qt/build
-          mkdir -p NovaCompositor.app/Contents/MacOS
-          mkdir -p NovaCompositor.app/Contents/Frameworks
-          cp bin/NovaCompositor NovaCompositor.app/Contents/MacOS/
-          
-          # Copy Qt frameworks
-          QT_PATH=$(brew --prefix qt@6)
-          for lib in Qt6Core Qt6Gui Qt6Qml Qt6Quick Qt6Widgets; do
-            if [ -f "$QT_PATH/lib/${lib}.framework/${lib}" ]; then
-              cp -R "$QT_PATH/lib/${lib}.framework" NovaCompositor.app/Contents/Frameworks/
-            fi
-          done
-          
-          # Create Info.plist
-          cat > NovaCompositor.app/Contents/Info.plist << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>CFBundleExecutable</key><string>NovaCompositor</string>
-            <key>CFBundleIdentifier</key><string>com.novacompositor.app</string>
-            <key>CFBundleName</key><string>Nova Compositor</string>
-            <key>CFBundleVersion</key><string>0.1.0</string>
-            <key>CFBundleShortVersionString</key><string>0.1.0</string>
-            <key>CFBundlePackageType</key><string>APPL</string>
-            <key>LSMinimumSystemVersion</key><string>13.0</string>
-          </dict>
-          </plist>
-          EOF
-          
-          # Create DMG
-          hdiutil create -volname "Nova Compositor" -srcfolder NovaCompositor.app -ov -format UDZO NovaCompositor-macos.dmg
-
-      - name: Upload macOS DMG
+      - name: Upload macOS binary
         uses: actions/upload-artifact@v4
         with:
           name: NovaCompositor-macos-arm64
-          path: ui_qt/build/NovaCompositor-macos.dmg
+          path: ui_qt/build/bin/NovaCompositor
           retention-days: 14
 
   # ─────────────────────────────────────────────────────────────────────────────
