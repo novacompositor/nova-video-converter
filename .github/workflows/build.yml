@@ -43,6 +43,8 @@ jobs:
             libavfilter-dev libswscale-dev libswresample-dev \
             libavdevice-dev libpostproc-dev \
             libclang-dev clang pkg-config
+          echo "FFMPEG_INCLUDE_DIR=/usr/include/x86_64-linux-gnu" >> $GITHUB_ENV
+          echo "BINDGEN_EXTRA_CLANG_ARGS=-I/usr/include/x86_64-linux-gnu" >> $GITHUB_ENV
 
       # macOS: install FFmpeg via homebrew
       - name: Install FFmpeg (macOS)
