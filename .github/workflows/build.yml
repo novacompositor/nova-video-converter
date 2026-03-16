@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build
 
 on:
   push:
@@ -9,12 +9,10 @@ on:
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
-  CMAKE_VERSION: "3.30.0"
-  QT_VERSION: "6.8.2"
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────────────
-  # Linux Build & Package (Primary release target)
+  # Linux Build
   # ─────────────────────────────────────────────────────────────────────────────
   linux_build:
     name: Linux Build
@@ -38,13 +36,9 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: "1.84.0"
 
       - name: Cache Cargo
         uses: Swatinem/rust-cache@v2
-        with:
-          key: "cargo-cache-v1"
 
       - name: Build Rust (release)
         run: cargo build --workspace --release
@@ -58,63 +52,151 @@ jobs:
       - name: Build Qt UI
         run: cmake --build ui_qt/build --parallel
 
-      - name: Upload binary
+      - name: Upload Linux binary
         uses: actions/upload-artifact@v4
         with:
           name: NovaCompositor-linux-x86_64
           path: ui_qt/build/bin/NovaCompositor
-          retention-days: 30
+          retention-days: 14
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # Create GitHub Release
+  # macOS Build
   # ─────────────────────────────────────────────────────────────────────────────
-  release:
-    name: Create GitHub Release
-    runs-on: ubuntu-24.04
-    needs: linux_build
-    if: github.event_name == 'push'
+  macos_build:
+    name: macOS Build
+    runs-on: macos-14
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download Linux artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: NovaCompositor-*
-          merge-multiple: true
-          path: artifacts/
-
-      - name: List artifacts
-        run: ls -la artifacts/
-
-      - name: Generate changelog
+      - name: Install dependencies
         run: |
-          cat > RELEASE_NOTES.md << 'EOF'
-          # Nova Compositor Release
+          brew install ffmpeg qt@6 cmake ninja
 
-          ## Changes
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build Rust (release)
+        run: cargo build --workspace --release
+
+      - name: Configure CMake
+        run: |
+          cmake -B ui_qt/build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 \
+            -S ui_qt/
+
+      - name: Build Qt UI
+        run: cmake --build ui_qt/build --parallel
+
+      - name: Create macOS App Bundle
+        run: |
+          cd ui_qt/build
+          mkdir -p NovaCompositor.app/Contents/MacOS
+          mkdir -p NovaCompositor.app/Contents/Frameworks
+          cp bin/NovaCompositor NovaCompositor.app/Contents/MacOS/
+          
+          # Copy Qt frameworks
+          QT_PATH=$(brew --prefix qt@6)
+          for lib in Qt6Core Qt6Gui Qt6Qml Qt6Quick Qt6Widgets; do
+            if [ -f "$QT_PATH/lib/${lib}.framework/${lib}" ]; then
+              cp -R "$QT_PATH/lib/${lib}.framework" NovaCompositor.app/Contents/Frameworks/
+            fi
+          done
+          
+          # Create Info.plist
+          cat > NovaCompositor.app/Contents/Info.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleExecutable</key><string>NovaCompositor</string>
+            <key>CFBundleIdentifier</key><string>com.novacompositor.app</string>
+            <key>CFBundleName</key><string>Nova Compositor</string>
+            <key>CFBundleVersion</key><string>0.1.0</string>
+            <key>CFBundleShortVersionString</key><string>0.1.0</string>
+            <key>CFBundlePackageType</key><string>APPL</string>
+            <key>LSMinimumSystemVersion</key><string>13.0</string>
+          </dict>
+          </plist>
           EOF
-          git log --oneline -10 >> RELEASE_NOTES.md
-          cat >> RELEASE_NOTES.md << 'EOF'
+          
+          # Create DMG
+          hdiutil create -volname "Nova Compositor" -srcfolder NovaCompositor.app -ov -format UDZO NovaCompositor-macos.dmg
 
-          ## Installation
-
-          ### Linux
-          1. Download `NovaCompositor-linux-x86_64`
-          2. Extract and run: `./NovaCompositor`
-
-          **Requirements**: Qt6, FFmpeg libraries must be installed.
-          EOF
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload macOS DMG
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: v0.1.0-${{ github.run_number }}
-          name: Nova Compositor v0.1.0-${{ github.run_number }}
-          body_path: RELEASE_NOTES.md
-          draft: false
-          prerelease: false
-          files: |
-            artifacts/NovaCompositor-linux-x86_64
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: NovaCompositor-macos-arm64
+          path: ui_qt/build/NovaCompositor-macos.dmg
+          retention-days: 14
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Windows Build
+  # ─────────────────────────────────────────────────────────────────────────────
+  windows_build:
+    name: Windows Build
+    runs-on: windows-2022
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Qt6
+        run: choco install qt6-base qt6-declarative cmake ninja -y --no-progress
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Download FFmpeg
+        shell: pwsh
+        run: |
+          $ffmpegUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip"
+          Invoke-WebRequest -Uri $ffmpegUrl -OutFile ffmpeg.zip
+          Expand-Archive -Path ffmpeg.zip -DestinationPath ffmpeg
+          Move-Item -Path ffmpeg\ffmpeg-master-latest-win64-gpl-shared\* -Destination . -Force
+          $pwd_path = pwd
+          echo "FFMPEG_DIR=$pwd_path" >> $env:GITHUB_ENV
+          echo "FFMPEG_INCLUDE_DIR=$pwd_path\include" >> $env:GITHUB_ENV
+          echo "FFMPEG_LIB_DIR=$pwd_path\lib" >> $env:GITHUB_ENV
+          echo "BINDGEN_EXTRA_CLANG_ARGS=-I$pwd_path\include" >> $env:GITHUB_ENV
+          echo "$pwd_path\bin" | Add-Content -Path $env:GITHUB_PATH
+
+      - name: Build Rust (release)
+        shell: pwsh
+        run: |
+          cargo build --workspace --release
+
+      - name: Configure CMake
+        shell: pwsh
+        run: |
+          cmake -B ui_qt\build -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_BUILD_TYPE=Release `
+            -S ui_qt\
+
+      - name: Build Qt UI
+        shell: pwsh
+        run: cmake --build ui_qt\build --config Release --parallel
+
+      - name: Deploy Qt dependencies
+        shell: pwsh
+        run: |
+          $qtPath = Get-ChildItem -Path "C:\Qt" -Recurse -Filter "qmake.exe" | Select-Object -First 1
+          if ($qtPath) {
+            & "$($qtPath.DirectoryName)\windeployqt.exe" --release ui_qt\build\bin\NovaCompositor.exe
+          }
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: NovaCompositor-windows-x64
+          path: ui_qt/build/bin/
+          retention-days: 14
