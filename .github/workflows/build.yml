@@ -42,7 +42,7 @@ jobs:
             libavcodec-dev libavformat-dev libavutil-dev \
             libavfilter-dev libswscale-dev libswresample-dev \
             libavdevice-dev libpostproc-dev \
-            libclang-dev clang
+            libclang-dev clang pkg-config
 
       # macOS: install FFmpeg via homebrew
       - name: Install FFmpeg (macOS)
@@ -51,6 +51,8 @@ jobs:
           brew install ffmpeg pkg-config
           PREFIX=$(brew --prefix ffmpeg)
           echo "FFMPEG_DIR=$PREFIX" >> $GITHUB_ENV
+          echo "FFMPEG_INCLUDE_DIR=$PREFIX/include" >> $GITHUB_ENV
+          echo "FFMPEG_LIB_DIR=$PREFIX/lib" >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig" >> $GITHUB_ENV
           echo "BINDGEN_EXTRA_CLANG_ARGS=-I$PREFIX/include" >> $GITHUB_ENV
           echo "CARGO_CFG_FFMPEG_7_0=1" >> $GITHUB_ENV
@@ -64,6 +66,8 @@ jobs:
           vcpkg install ffmpeg[avdevice,avfilter,avformat,swresample,swscale,avcodec]:x64-windows
           $VCPKG_PREFIX = "$env:VCPKG_INSTALLATION_ROOT\installed\x64-windows"
           echo "FFMPEG_DIR=$VCPKG_PREFIX" >> $env:GITHUB_ENV
+          echo "FFMPEG_INCLUDE_DIR=$VCPKG_PREFIX\include" >> $env:GITHUB_ENV
+          echo "FFMPEG_LIB_DIR=$VCPKG_PREFIX\lib" >> $env:GITHUB_ENV
           echo "PKG_CONFIG_PATH=$VCPKG_PREFIX\lib\pkgconfig" >> $env:GITHUB_ENV
           echo "BINDGEN_EXTRA_CLANG_ARGS=-I$VCPKG_PREFIX\include" >> $env:GITHUB_ENV
           echo "CARGO_CFG_FFMPEG_7_0=1" >> $env:GITHUB_ENV
@@ -78,6 +82,8 @@ jobs:
         run: cargo clippy --all -- -D warnings
         env:
           FFMPEG_DIR: ${{ env.FFMPEG_DIR }}
+          FFMPEG_INCLUDE_DIR: ${{ env.FFMPEG_INCLUDE_DIR }}
+          FFMPEG_LIB_DIR: ${{ env.FFMPEG_LIB_DIR }}
           PKG_CONFIG_PATH: ${{ env.PKG_CONFIG_PATH }}
           BINDGEN_EXTRA_CLANG_ARGS: ${{ env.BINDGEN_EXTRA_CLANG_ARGS }}
 
@@ -91,6 +97,8 @@ jobs:
         run: cargo test --workspace
         env:
           FFMPEG_DIR: ${{ env.FFMPEG_DIR }}
+          FFMPEG_INCLUDE_DIR: ${{ env.FFMPEG_INCLUDE_DIR }}
+          FFMPEG_LIB_DIR: ${{ env.FFMPEG_LIB_DIR }}
 
       - name: Cargo build release
         run: cargo build --workspace --release --no-default-features
