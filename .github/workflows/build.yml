@@ -126,6 +126,11 @@ jobs:
             cmake ninja-build \
             libgl1-mesa-dev libvulkan-dev
 
+      - name: Build Rust app_bridge (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          cargo build --manifest-path app_bridge/Cargo.toml
+
       - name: Install AppImage tools (Linux)
         if: runner.os == 'Linux'
         run: |
@@ -156,10 +161,10 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           cd ui_qt/build
-          ../linuxdeploy-x86_64.AppImage --appdir AppDir \
+          ../../linuxdeploy-x86_64.AppImage --appdir AppDir \
             -e bin/NovaCompositor \
-            -i ../../ui_qt/resources/nova-compositor.png \
-            -d ../../ui_qt/resources/nova-compositor.desktop \
+            -i ../resources/nova-compositor.png \
+            -d ../resources/nova-compositor.desktop \
             -p qt \
             --output appimage
 
@@ -167,10 +172,10 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           cd ui_qt/build
-          ../linuxdeploy-x86_64.AppImage --appdir AppDir \
+          ../../linuxdeploy-x86_64.AppImage --appdir AppDir \
             -e bin/NovaCompositor \
-            -i ../../ui_qt/resources/nova-compositor.png \
-            -d ../../ui_qt/resources/nova-compositor.desktop \
+            -i ../resources/nova-compositor.png \
+            -d ../resources/nova-compositor.desktop \
             -p qt \
             --output deb
 
@@ -189,6 +194,11 @@ jobs:
         run: |
           brew install qt@6 cmake ninja
           echo "$(brew --prefix qt@6)/bin" >> $GITHUB_PATH
+
+      - name: Build Rust app_bridge (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cargo build --manifest-path app_bridge/Cargo.toml
 
       - name: Configure CMake (macOS)
         if: runner.os == 'macOS'
@@ -249,6 +259,12 @@ jobs:
       - name: Setup MSVC environment
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build Rust app_bridge (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          cargo build --manifest-path app_bridge/Cargo.toml
 
       - name: Configure CMake (Windows)
         if: runner.os == 'Windows'
