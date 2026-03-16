@@ -11,9 +11,8 @@ set(CMAKE_AUTOUIC ON)
 # build/NovaCompositor/ QML module directory created by qt_add_qml_module.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # ── Qt 6 ──────────────────────────────────────────────────────────────────────
-find_package(Qt6 REQUIRED COMPONENTS
-    Core Quick QuickControls2 Gui Widgets
-)
+find_package(Qt6 REQUIRED COMPONENTS Core Quick Gui Widgets)
+find_package(Qt6QuickControls2 REQUIRED)
 
 # ── FFmpeg ────────────────────────────────────────────────────────────────────
 find_package(PkgConfig REQUIRED)
