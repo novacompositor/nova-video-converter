@@ -71,19 +71,37 @@ jobs:
 
       - name: Cargo fmt check
         run: cargo fmt --all -- --check
+        env:
+          FFMPEG_DIR: ${{ env.FFMPEG_DIR }}
 
       - name: Cargo clippy
         run: cargo clippy --all -- -D warnings
+        env:
+          FFMPEG_DIR: ${{ env.FFMPEG_DIR }}
+          FFMPEG_INCLUDE_DIR: ${{ env.FFMPEG_INCLUDE_DIR }}
+          FFMPEG_LIB_DIR: ${{ env.FFMPEG_LIB_DIR }}
+          PKG_CONFIG_PATH: ${{ env.PKG_CONFIG_PATH }}
+          BINDGEN_EXTRA_CLANG_ARGS: ${{ env.BINDGEN_EXTRA_CLANG_ARGS }}
+          CARGO_CFG_FFMPEG_7_0: "1"
+          CARGO_CFG_FFMPEG_7_1: "1"
 
       - name: Cargo test (workspace, no FFmpeg feature for speed)
         run: cargo test --workspace --no-default-features
+        env:
+          FFMPEG_DIR: ${{ env.FFMPEG_DIR }}
 
       - name: Cargo test (with FFmpeg feature)
         if: runner.os == 'Linux'
         run: cargo test --workspace
+        env:
+          FFMPEG_DIR: ${{ env.FFMPEG_DIR }}
+          CARGO_CFG_FFMPEG_7_0: "1"
+          CARGO_CFG_FFMPEG_7_1: "1"
 
       - name: Cargo build release
         run: cargo build --workspace --release --no-default-features
+        env:
+          FFMPEG_DIR: ${{ env.FFMPEG_DIR }}
 
   # ─────────────────────────────────────────────────────────────────────────────
   # Qt UI build (Linux only for CI speed — add macOS/Windows later)

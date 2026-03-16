@@ -97,7 +97,7 @@ impl EngineDispatcher {
             }
 
             EngineCommand::SaveProjectAs { path } => {
-                let mut project = state.project.as_mut().ok_or_else(|| {
+                let project = state.project.as_mut().ok_or_else(|| {
                     EngineError::new(EngineErrorCode::ProjectNotFound, "No project open")
                 })?;
                 project.touch();
@@ -120,14 +120,14 @@ impl EngineDispatcher {
                 resolution,
                 frame_rate,
                 duration,
-                color_profile,
+                color_profile: _,
             } => {
                 let project = state.project.as_mut().ok_or_else(|| {
                     EngineError::new(EngineErrorCode::ProjectNotFound, "No project open")
                 })?;
                 use project_schema::Composition;
                 let comp = Composition::new(name, resolution, frame_rate, duration);
-                let comp_id = comp.id;
+                let _comp_id = comp.id;
                 let project_id = project.project_id;
                 project.compositions.push(comp);
                 project.touch();
@@ -208,7 +208,7 @@ impl EngineDispatcher {
                 let clip = Clip::new_asset(
                     asset.name.clone(),
                     asset_id,
-                    asset.kind.clone(),
+                    asset.kind,
                     start_time,
                     source_in,
                     duration,
@@ -571,8 +571,8 @@ impl EngineDispatcher {
             }
 
             EngineCommand::UpdateAssetProperties {
-                asset_id,
-                frame_rate,
+                asset_id: _,
+                frame_rate: _,
             } => {
                 let project = state.project.as_mut().ok_or_else(|| {
                     EngineError::new(EngineErrorCode::ProjectNotFound, "No project open")
@@ -619,7 +619,7 @@ impl EngineDispatcher {
                     })?;
 
                 use engine_api::types::RationalTime;
-                use project_schema::{Layer, LayerKind};
+                use project_schema::Layer;
 
                 let in_point = RationalTime::new(0, 30);
                 let out_point = comp.duration;
@@ -645,7 +645,7 @@ impl EngineDispatcher {
                     }
                 };
 
-                let layer_id = layer.id;
+                let _layer_id = layer.id;
 
                 if let Some(idx) = index {
                     let clamped = idx.min(comp.layers.len());
