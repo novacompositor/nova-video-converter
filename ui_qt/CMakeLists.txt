@@ -108,13 +108,24 @@ target_include_directories(NovaCompositor PRIVATE
 # ── Rust Integration (Manual Cargo Build) ──────────────────────────────────────
 # Since Corrosion fails to find the local toolchain reliably, we build it directly.
 set(APP_BRIDGE_DIR ${CMAKE_SOURCE_DIR}/../app_bridge)
-set(APP_BRIDGE_LIB ${CMAKE_SOURCE_DIR}/../target/debug/libapp_bridge.a)
+
+# Try release first, then debug
+if(EXISTS ${CMAKE_SOURCE_DIR}/../target/release/libapp_bridge.a)
+    set(APP_BRIDGE_LIB ${CMAKE_SOURCE_DIR}/../target/release/libapp_bridge.a)
+elseif(EXISTS ${CMAKE_SOURCE_DIR}/../target/release/app_bridge.lib)
+    set(APP_BRIDGE_LIB ${CMAKE_SOURCE_DIR}/../target/release/app_bridge.lib)
+elseif(EXISTS ${CMAKE_SOURCE_DIR}/../target/debug/libapp_bridge.a)
+    set(APP_BRIDGE_LIB ${CMAKE_SOURCE_DIR}/../target/debug/libapp_bridge.a)
+else()
+    # Build in release mode by default
+    set(APP_BRIDGE_LIB ${CMAKE_SOURCE_DIR}/../target/release/libapp_bridge.a)
+endif()
 
 add_custom_command(
     OUTPUT ${APP_BRIDGE_LIB}
-    COMMAND cargo build --manifest-path ${APP_BRIDGE_DIR}/Cargo.toml
+    COMMAND cargo build --manifest-path ${APP_BRIDGE_DIR}/Cargo.toml --release
     DEPENDS ${APP_BRIDGE_DIR}/src/lib.rs ${APP_BRIDGE_DIR}/build.rs
-    COMMENT "Building Rust app_bridge library..."
+    COMMENT "Building Rust app_bridge library (release)..."
 )
 
 add_custom_target(app_bridge_target DEPENDS ${APP_BRIDGE_LIB})
