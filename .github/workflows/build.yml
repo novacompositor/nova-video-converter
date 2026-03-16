@@ -39,8 +39,9 @@ jobs:
       - name: Install Qt6 and CMake
         run: |
           sudo apt-get install -y \
-            qt6-base-dev qt6-declarative-dev qt6-quickcontrols2-dev \
-            cmake ninja-build
+            qt6-base-dev qt6-declarative-dev \
+            cmake ninja-build \
+            libqt6quickcontrols2-6
 
       - name: Install linuxdeploy
         run: |
