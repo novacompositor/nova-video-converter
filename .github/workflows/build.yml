@@ -16,37 +16,33 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   linux_build:
     name: Linux Build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache Cargo
-        uses: Swatinem/rust-cache@v2
-
-      - name: Install FFmpeg dev libs
+      - name: Install system dependencies
         run: |
           sudo apt-get update -y
           sudo apt-get install -y \
             libavcodec-dev libavformat-dev libavutil-dev \
             libavfilter-dev libswscale-dev libswresample-dev \
             libavdevice-dev libpostproc-dev \
-            libclang-dev clang pkg-config
-
-      - name: Install Qt6 and CMake
-        run: |
-          sudo apt-get install -y \
+            libclang-dev clang pkg-config \
             qt6-base-dev qt6-declarative-dev \
             cmake ninja-build \
+            libgl1-mesa-dev libvulkan-dev \
+            desktop-file-utils libfuse2 appstream \
             libqt6quickcontrols2-6
 
-      - name: Install linuxdeploy
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Download linuxdeploy
         run: |
-          sudo apt-get install -y \
-            desktop-file-utils libfuse2 appstream
           wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod +x linuxdeploy-*.AppImage
@@ -71,20 +67,9 @@ jobs:
             -i ../resources/nova-compositor.png \
             -d ../resources/nova-compositor.desktop \
             -p qt \
-            --output appimage || echo "AppImage creation failed, continuing..."
-
-      - name: Create DEB package
-        run: |
-          cd ui_qt/build
-          ../../linuxdeploy-x86_64.AppImage --appdir AppDir \
-            -e bin/NovaCompositor \
-            -i ../resources/nova-compositor.png \
-            -d ../resources/nova-compositor.desktop \
-            -p qt \
-            --output deb || echo "DEB creation failed, continuing..."
+            --output appimage
 
       - name: Upload AppImage
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: NovaCompositor-linux-x86_64.AppImage
@@ -92,7 +77,6 @@ jobs:
           retention-days: 30
 
       - name: Upload DEB
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: NovaCompositor-linux-x86_64.deb
@@ -107,205 +91,12 @@ jobs:
           retention-days: 30
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # macOS Build (experimental)
-  # ─────────────────────────────────────────────────────────────────────────────
-  macos_build:
-    name: macOS Build
-    runs-on: macos-14
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache Cargo
-        uses: Swatinem/rust-cache@v2
-
-      - name: Install FFmpeg and Qt6
-        run: |
-          brew install ffmpeg qt@6 cmake ninja
-
-      - name: Build Rust (release)
-        run: cargo build --workspace --release
-
-      - name: Configure CMake
-        run: |
-          cmake -B ui_qt/build -G Ninja \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 \
-            -S ui_qt/
-
-      - name: Build Qt UI
-        run: cmake --build ui_qt/build --parallel
-
-      - name: Create macOS App
-        run: |
-          cd ui_qt/build
-          mkdir -p NovaCompositor.app/Contents/MacOS
-          mkdir -p NovaCompositor.app/Contents/Resources
-          cp bin/NovaCompositor NovaCompositor.app/Contents/MacOS/
-          
-          cat > NovaCompositor.app/Contents/Info.plist << 'EOF'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>CFBundleExecutable</key><string>NovaCompositor</string>
-            <key>CFBundleIdentifier</key><string>com.novacompositor.app</string>
-            <key>CFBundleName</key><string>Nova Compositor</string>
-            <key>CFBundleVersion</key><string>0.1.0</string>
-            <key>CFBundleShortVersionString</key><string>0.1.0</string>
-            <key>CFBundlePackageType</key><string>APPL</string>
-            <key>LSMinimumSystemVersion</key><string>13.0</string>
-          </dict>
-          </plist>
-          EOF
-          
-          # Copy Qt frameworks
-          QT_PATH=$(brew --prefix qt@6)
-          mkdir -p NovaCompositor.app/Contents/Frameworks
-          for lib in Qt6Core Qt6Gui Qt6Qml Qt6Quick Qt6Widgets Qt6Network; do
-            if [ -f "$QT_PATH/lib/${lib}.framework/${lib}" ]; then
-              cp -R "$QT_PATH/lib/${lib}.framework" NovaCompositor.app/Contents/Frameworks/
-            fi
-          done
-          
-          # Create DMG
-          hdiutil create -volname "Nova Compositor" -srcfolder NovaCompositor.app -ov -format UDZO NovaCompositor-macos.dmg
-
-      - name: Upload macOS DMG
-        uses: actions/upload-artifact@v4
-        with:
-          name: NovaCompositor-macos-arm64.dmg
-          path: ui_qt/build/*.dmg
-          retention-days: 30
-
-  # ─────────────────────────────────────────────────────────────────────────────
-  # Windows Build (experimental)
-  # ─────────────────────────────────────────────────────────────────────────────
-  windows_build:
-    name: Windows Build
-    runs-on: windows-2022
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache Cargo
-        uses: Swatinem/rust-cache@v2
-
-      - name: Setup MSVC
-        uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Install Qt6
-        shell: pwsh
-        run: |
-          # Try choco first, fallback to manual download if needed
-          choco install qt6-base qt6-declarative qt6-quickcontrols2 cmake ninja -y --no-progress || {
-            Write-Host "Chocolatey failed, downloading Qt manually..."
-            # Download Qt installer
-            $qtUrl = "https://download.qt.io/official_releases/online_installers/qt-unified-windows-x64-online.exe"
-            # For now, just install minimal Qt
-            choco install qt6-base -y --no-progress || Write-Host "Qt install failed"
-          }
-          choco install cmake ninja -y --no-progress
-
-      - name: Download FFmpeg
-        shell: pwsh
-        run: |
-          $ffmpegUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip"
-          Invoke-WebRequest -Uri $ffmpegUrl -OutFile ffmpeg.zip
-          Expand-Archive -Path ffmpeg.zip -DestinationPath ffmpeg
-          Move-Item -Path ffmpeg\ffmpeg-master-latest-win64-gpl-shared\* -Destination . -Force
-          $pwd_path = pwd
-          echo "FFMPEG_DIR=$pwd_path" >> $env:GITHUB_ENV
-          echo "FFMPEG_INCLUDE_DIR=$pwd_path\include" >> $env:GITHUB_ENV
-          echo "FFMPEG_LIB_DIR=$pwd_path\lib" >> $env:GITHUB_ENV
-          echo "BINDGEN_EXTRA_CLANG_ARGS=-I$pwd_path\include" >> $env:GITHUB_ENV
-          echo "$pwd_path\bin" | Add-Content -Path $env:GITHUB_PATH
-
-      - name: Build Rust (release)
-        shell: pwsh
-        run: |
-          $env:FFMPEG_DIR = "$env:FFMPEG_DIR"
-          $env:FFMPEG_INCLUDE_DIR = "$env:FFMPEG_INCLUDE_DIR"
-          $env:FFMPEG_LIB_DIR = "$env:FFMPEG_LIB_DIR"
-          $env:BINDGEN_EXTRA_CLANG_ARGS = "$env:BINDGEN_EXTRA_CLANG_ARGS"
-          cargo build --workspace --release
-
-      - name: Configure CMake
-        shell: pwsh
-        run: |
-          cmake -B ui_qt\build -G "Visual Studio 17 2022" -A x64 `
-            -DCMAKE_BUILD_TYPE=Release `
-            -S ui_qt\
-
-      - name: Build Qt UI
-        shell: pwsh
-        run: cmake --build ui_qt\build --config Release --parallel
-
-      - name: Deploy Qt
-        shell: pwsh
-        run: |
-          $qtPath = Get-ChildItem -Path "C:\Qt" -Recurse -Filter "qmake.exe" | Select-Object -First 1
-          if ($qtPath) {
-            & "$($qtPath.DirectoryName)\windeployqt.exe" --release ui_qt\build\bin\NovaCompositor.exe
-          }
-
-      - name: Create installer
-        shell: pwsh
-        run: |
-          choco install nsis -y --no-progress
-          $nsis = @"
-          !include "MUI2.nsh"
-          !define PRODUCT_NAME "Nova Compositor"
-          Name "`${PRODUCT_NAME}"
-          OutFile "NovaCompositor-Setup.exe"
-          InstallDir "`$PROGRAMFILES\NovaCompositor"
-          !insertmacro MUI_PAGE_WELCOME
-          !insertmacro MUI_PAGE_LICENSE "..\..\LICENSE"
-          !insertmacro MUI_PAGE_DIRECTORY
-          !insertmacro MUI_PAGE_INSTFILES
-          !insertmacro MUI_PAGE_FINISH
-          !insertmacro MUI_LANGUAGE "English"
-          Section "Install"
-            SetOutPath "`$INSTDIR"
-            File /r "ui_qt\build\bin\*.*"
-            File /r "ui_qt\build\bin\*"
-            WriteRegStr HKLM SOFTWARE\`${PRODUCT_NAME} "" `$INSTDIR
-            WriteUninstaller "`$INSTDIR\uninstall.exe"
-            CreateShortCut "`$DESKTOP\Nova Compositor.lnk" "`$INSTDIR\NovaCompositor.exe"
-          SectionEnd
-          Section "Uninstall"
-            DeleteRegKey HKLM SOFTWARE\`${PRODUCT_NAME}
-            Delete "`$INSTDIR\uninstall.exe"
-            RMDir /r "`$INSTDIR"
-            Delete "`$DESKTOP\Nova Compositor.lnk"
-          SectionEnd
-          "@
-          Set-Content -Path "ui_qt\build\installer.nsi" -Value $nsis
-          & "C:\Program Files (x86)\NSIS\makensis.exe" /V2 "ui_qt\build\installer.nsi"
-          Move-Item "NovaCompositor-Setup.exe" "ui_qt\build\" -Force
-
-      - name: Upload Windows installer
-        uses: actions/upload-artifact@v4
-        with:
-          name: NovaCompositor-windows-x64-Setup.exe
-          path: ui_qt/build/NovaCompositor-Setup.exe
-          retention-days: 30
-
-  # ─────────────────────────────────────────────────────────────────────────────
   # Create GitHub Release
   # ─────────────────────────────────────────────────────────────────────────────
   release:
     name: Create GitHub Release
-    runs-on: ubuntu-22.04
-    needs: [linux_build]
+    runs-on: ubuntu-24.04
+    needs: linux_build
     if: github.event_name == 'push'
     
     steps:
@@ -316,21 +107,7 @@ jobs:
         with:
           pattern: NovaCompositor-linux-*
           merge-multiple: true
-          path: artifacts/linux/
-
-      - name: Download macOS artifact (if exists)
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: NovaCompositor-macos-arm64.dmg
-          path: artifacts/macos/
-
-      - name: Download Windows artifact (if exists)
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: NovaCompositor-windows-x64-Setup.exe
-          path: artifacts/windows/
+          path: artifacts/
 
       - name: Generate changelog
         run: |
@@ -342,14 +119,8 @@ jobs:
           echo "## Installation" >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
           echo "### Linux" >> RELEASE_NOTES.md
-          echo "- **AppImage**: Portable version - just run it!" >> RELEASE_NOTES.md
+          echo "- **AppImage**: Portable version - chmod +x and run!" >> RELEASE_NOTES.md
           echo "- **DEB**: Install with \`sudo apt install ./nova-compositor_*.deb\`" >> RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          echo "### macOS (experimental)" >> RELEASE_NOTES.md
-          echo "- **DMG**: Open and drag to Applications" >> RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          echo "### Windows (experimental)" >> RELEASE_NOTES.md
-          echo "- **Installer**: Run NovaCompositor-Setup.exe" >> RELEASE_NOTES.md
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -359,7 +130,6 @@ jobs:
           body_path: RELEASE_NOTES.md
           draft: false
           prerelease: false
-          files: |
-            artifacts/**/*
+          files: artifacts/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
