@@ -69,6 +69,21 @@ jobs:
           echo "CARGO_ENCODED_RUSTFLAGS=-Clink-arg=/LIBPATH:$pwd_path\lib" >> $env:GITHUB_ENV
 
       - name: Cargo build release (workspace)
+        if: runner.os == 'Linux'
+        run: cargo build --workspace --release
+        env:
+          PKG_CONFIG_ALLOW_SYSTEM_LIBS: "1"
+          PKG_CONFIG_ALLOW_SYSTEM_CFLAGS: "1"
+
+      - name: Cargo build release (workspace)
+        if: runner.os == 'macOS'
+        run: cargo build --workspace --release
+        env:
+          PKG_CONFIG_ALLOW_SYSTEM_LIBS: "1"
+          PKG_CONFIG_ALLOW_SYSTEM_CFLAGS: "1"
+
+      - name: Cargo build release (workspace)
+        if: runner.os == 'Windows'
         run: cargo build --workspace --release
         env:
           PKG_CONFIG_ALLOW_SYSTEM_LIBS: "1"
