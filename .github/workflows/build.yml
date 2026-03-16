@@ -58,17 +58,25 @@ jobs:
           Invoke-WebRequest -Uri $ffmpegUrl -OutFile ffmpeg.zip
           Expand-Archive -Path ffmpeg.zip -DestinationPath ffmpeg
           Move-Item -Path ffmpeg\ffmpeg-master-latest-win64-gpl-shared\* -Destination . -Force
-          # Set environment for bindgen
-          echo "FFMPEG_DIR=$(pwd)" >> $env:GITHUB_ENV
-          echo "FFMPEG_INCLUDE_DIR=$(pwd)\include" >> $env:GITHUB_ENV
-          echo "FFMPEG_LIB_DIR=$(pwd)\lib" >> $env:GITHUB_ENV
-          echo "PATH=$(pwd)\bin;$env:PATH" >> $env:GITHUB_PATH
+          
+          # Set environment for bindgen and cargo
+          $pwd_path = pwd
+          echo "FFMPEG_DIR=$pwd_path" >> $env:GITHUB_ENV
+          echo "FFMPEG_INCLUDE_DIR=$pwd_path\include" >> $env:GITHUB_ENV
+          echo "FFMPEG_LIB_DIR=$pwd_path\lib" >> $env:GITHUB_ENV
+          echo "PATH=$pwd_path\bin;$env:PATH" >> $env:GITHUB_PATH
+          echo "BINDGEN_EXTRA_CLANG_ARGS=-I$pwd_path\include" >> $env:GITHUB_ENV
+          echo "CARGO_ENCODED_RUSTFLAGS=-Clink-arg=/LIBPATH:$pwd_path\lib" >> $env:GITHUB_ENV
 
       - name: Cargo build release (workspace)
         run: cargo build --workspace --release
         env:
           PKG_CONFIG_ALLOW_SYSTEM_LIBS: "1"
           PKG_CONFIG_ALLOW_SYSTEM_CFLAGS: "1"
+          FFMPEG_DIR: ${{ env.FFMPEG_DIR }}
+          FFMPEG_INCLUDE_DIR: ${{ env.FFMPEG_INCLUDE_DIR }}
+          FFMPEG_LIB_DIR: ${{ env.FFMPEG_LIB_DIR }}
+          BINDGEN_EXTRA_CLANG_ARGS: ${{ env.BINDGEN_EXTRA_CLANG_ARGS }}
 
       - name: Upload Rust artifacts (Linux)
         if: runner.os == 'Linux'
