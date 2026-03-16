@@ -50,10 +50,10 @@ jobs:
         run: |
           brew install ffmpeg pkg-config
           PREFIX=$(brew --prefix ffmpeg)
-          echo "PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig" >> $GITHUB_ENV
           echo "FFMPEG_DIR=$PREFIX" >> $GITHUB_ENV
-          echo "C_INCLUDE_PATH=$PREFIX/include" >> $GITHUB_ENV
-          echo "LIBRARY_PATH=$PREFIX/lib" >> $GITHUB_ENV
+          echo "FFMPEG_INCLUDE_DIR=$PREFIX/include" >> $GITHUB_ENV
+          echo "FFMPEG_LIB_DIR=$PREFIX/lib" >> $GITHUB_ENV
+          echo "PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig" >> $GITHUB_ENV
           echo "BINDGEN_EXTRA_CLANG_ARGS=-I$PREFIX/include" >> $GITHUB_ENV
 
       # Windows: install FFmpeg via vcpkg (pre-installed on GHA)
@@ -61,10 +61,13 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           vcpkg integrate install
-          vcpkg install ffmpeg[avdevice,avfilter,avformat,swresample,swscale]:x64-windows
-          echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> $GITHUB_ENV
-          echo "FFMPEG_DIR=$VCPKG_INSTALLATION_ROOT\installed\x64-windows" >> $GITHUB_ENV
-          echo "PKG_CONFIG_PATH=$VCPKG_INSTALLATION_ROOT\installed\x64-windows\lib\pkgconfig" >> $GITHUB_ENV
+          vcpkg install ffmpeg[avdevice,avfilter,avformat,swresample,swscale,avcodec]:x64-windows
+          $VCPKG_PREFIX = "$env:VCPKG_INSTALLATION_ROOT\installed\x64-windows"
+          echo "FFMPEG_DIR=$VCPKG_PREFIX" >> $env:GITHUB_ENV
+          echo "FFMPEG_INCLUDE_DIR=$VCPKG_PREFIX\include" >> $env:GITHUB_ENV
+          echo "FFMPEG_LIB_DIR=$VCPKG_PREFIX\lib" >> $env:GITHUB_ENV
+          echo "PKG_CONFIG_PATH=$VCPKG_PREFIX\lib\pkgconfig" >> $env:GITHUB_ENV
+          echo "BINDGEN_EXTRA_CLANG_ARGS=-I$VCPKG_PREFIX\include" >> $env:GITHUB_ENV
 
       - name: Cargo fmt check
         run: cargo fmt --all -- --check

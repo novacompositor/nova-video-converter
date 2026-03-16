@@ -1,8 +1,7 @@
 use crate::asset::AssetKind;
-use crate::sequence::{Clip, ClipItem, Sequence, Track, TrackKind};
+use crate::sequence::{Clip, Sequence, Track, TrackKind};
 use engine_api::types::{FrameRate, RationalTime, Resolution};
 use roxmltree::Document;
-use std::str::FromStr;
 use uuid::Uuid;
 
 #[derive(Debug, thiserror::Error)]
